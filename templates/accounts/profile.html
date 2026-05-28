@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Profile</h1>
+
+<p>
+    Username: {{ user.username }}
+</p>
+
+<p>
+    Screen Name: {{ profile.screen_name }}
+</p>
+
+<p>
+    Favourite Team:
+    {{ profile.favourite_team|default:"Not set" }}
+</p>
+
+{% endblock %}
