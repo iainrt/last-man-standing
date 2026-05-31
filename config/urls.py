@@ -31,4 +31,9 @@ urlpatterns = [
         "accounts/",
         include("apps.accounts.urls"),
     ),
+
+    path(
+        "competitions/",
+        include("apps.competitions.urls"),
+),
 ]
