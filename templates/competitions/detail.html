@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{ competition.name }}</h1>
+
+<p>
+    Season:
+    {{ competition.season }}
+</p>
+
+<p>
+    Invite Code:
+    <strong>{{ competition.invite_code }}</strong>
+</p>
+
+<p>
+    Created By:
+    {{ competition.created_by.username }}
+</p>
+
+<p>
+    Active:
+    {{ competition.is_active|yesno:"Yes,No" }}
+</p>
+
+<hr>
+
+<h2>Members</h2>
+
+<table border="1">
+
+    <tr>
+        <th>Screen Name</th>
+        <th>Favourite Team</th>
+        <th>Status</th>
+        <th>Role</th>
+    </tr>
+
+    {% for member in members %}
+
+        <tr>
+
+            <td>
+                {{ member.user.profile.screen_name }}
+            </td>
+
+            <td>
+                {{ member.user.profile.favourite_team|default:"-" }}
+            </td>
+
+            <td>
+
+                {% if member.is_eliminated %}
+                    Eliminated
+                {% else %}
+                    Active
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                {% if member.is_admin %}
+                    Admin
+                {% else %}
+                    Member
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+    {% endfor %}
+
+</table>
+
+<p>
+    <a href="{% url 'competition_list' %}">
+        Back to Competitions
+    </a>
+</p>
+
+{% endblock %}

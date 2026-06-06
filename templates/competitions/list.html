@@ -4,8 +4,46 @@
 
 <h1>My Competitions</h1>
 
-<p>
-    No competitions yet.
-</p>
+{% if user.profile.can_create_competitions %}
+    <p>
+        <a href="{% url 'competition_create' %}">
+            Create Competition
+        </a>
+    </p>
+{% endif %}
+
+{% if memberships %}
+
+    <ul>
+
+    {% for membership in memberships %}
+
+        <li>
+
+            <a href="{% url 'competition_detail' membership.competition.id %}">
+                {{ membership.competition.name }}
+            </a>
+
+            <br>
+
+            {{ membership.competition.season }}
+
+            {% if membership.is_admin %}
+                (Admin)
+            {% endif %}
+
+        </li>
+
+    {% endfor %}
+
+    </ul>
+
+{% else %}
+
+    <p>
+        You are not a member of any competitions.
+    </p>
+
+{% endif %}
 
 {% endblock %}

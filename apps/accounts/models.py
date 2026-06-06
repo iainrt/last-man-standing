@@ -22,6 +22,10 @@ class Profile(models.Model):
         related_name="supporters",
     )
 
+    can_create_competitions = models.BooleanField(
+        default=False,
+    )
+
     created_at = models.DateTimeField(
         auto_now_add=True,
     )

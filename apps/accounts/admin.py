@@ -8,6 +8,7 @@ class ProfileAdmin(admin.ModelAdmin):
         "screen_name",
         "user",
         "favourite_team",
+        "can_create_competitions",
         "created_at",
     )
 
@@ -18,4 +19,5 @@ class ProfileAdmin(admin.ModelAdmin):
 
     list_filter = (
         "favourite_team",
+        "can_create_competitions",
     )

@@ -15,6 +15,11 @@
         {% if user.is_authenticated %}
 
             |
+            <a href="{% url 'competition_list' %}">
+                Competitions
+            </a>
+            |
+
             <a href="{% url 'profile' %}">
                 Profile
             </a>
