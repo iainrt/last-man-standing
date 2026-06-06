@@ -10,3 +10,9 @@ class CompetitionForm(forms.ModelForm):
             "name",
             "season",
         ]
+
+class JoinCompetitionForm(forms.Form):
+    invite_code = forms.CharField(
+        max_length=12,
+        label="Invite code",
+    )

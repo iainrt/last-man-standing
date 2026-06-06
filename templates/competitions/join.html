@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Join Competition</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">
+        Join Competition
+    </button>
+</form>
+
+<p>
+    <a href="{% url 'competition_list' %}">
+        Back to Competitions
+    </a>
+</p>
+
+{% endblock %}

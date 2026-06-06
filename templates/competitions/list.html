@@ -4,6 +4,12 @@
 
 <h1>My Competitions</h1>
 
+<p>
+    <a href="{% url 'competition_join' %}">
+        Join Competition
+    </a>
+</p>
+
 {% if user.profile.can_create_competitions %}
     <p>
         <a href="{% url 'competition_create' %}">

@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import CompetitionForm
+from .forms import CompetitionForm, JoinCompetitionForm
 from .models import Competition, CompetitionMember
 
 
@@ -106,5 +106,51 @@ def competition_detail_view(request, competition_id):
             "competition": competition,
             "membership": membership,
             "members": members,
+        },
+    )
+
+@login_required
+def join_competition_view(request):
+    if request.method == "POST":
+        form = JoinCompetitionForm(request.POST)
+
+        if form.is_valid():
+            invite_code = form.cleaned_data["invite_code"].strip()
+
+            competition = Competition.objects.filter(
+                invite_code__iexact=invite_code,
+                is_active=True,
+            ).first()
+
+            if competition is None:
+                messages.error(request, "No active competition found with that invite code.")
+                return redirect("competition_join")
+
+            membership, created = CompetitionMember.objects.get_or_create(
+                competition=competition,
+                user=request.user,
+                defaults={
+                    "is_admin": False,
+                },
+            )
+
+            if created:
+                messages.success(request, "You have joined the competition.")
+            else:
+                messages.info(request, "You are already a member of this competition.")
+
+            return redirect(
+                "competition_detail",
+                competition_id=competition.id,
+            )
+
+    else:
+        form = JoinCompetitionForm()
+
+    return render(
+        request,
+        "competitions/join.html",
+        {
+            "form": form,
         },
     )
