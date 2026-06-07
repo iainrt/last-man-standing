@@ -136,3 +136,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# for testing password reset functionality
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
