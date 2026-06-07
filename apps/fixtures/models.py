@@ -47,4 +47,104 @@ class Team(models.Model):
     def __str__(self):
         return self.name
     
+class SeasonTeam(models.Model):
+    season = models.ForeignKey(
+        Season,
+        on_delete=models.CASCADE,
+        related_name="season_teams",
+    )
 
+    team = models.ForeignKey(
+        Team,
+        on_delete=models.CASCADE,
+        related_name="season_teams",
+    )
+
+    class Meta:
+        unique_together = ("season", "team")
+
+    def __str__(self):
+        return f"{self.team.name} - {self.season}"
+    
+
+class Gameweek(models.Model):
+    season = models.ForeignKey(
+        Season,
+        on_delete=models.CASCADE,
+        related_name="gameweeks",
+    )
+
+    number = models.PositiveIntegerField()
+
+    deadline = models.DateTimeField()
+
+    is_published = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("season", "number")
+        ordering = ["season", "number"]
+
+    def __str__(self):
+        return f"{self.season} - Gameweek {self.number}"
+    
+
+class Match(models.Model):
+    class Status(models.TextChoices):
+        SCHEDULED = "SCHEDULED", "Scheduled"
+        IN_PLAY = "IN_PLAY", "In Play"
+        FINISHED = "FINISHED", "Finished"
+        POSTPONED = "POSTPONED", "Postponed"
+        CANCELLED = "CANCELLED", "Cancelled"
+
+    class Winner(models.TextChoices):
+        HOME = "HOME", "Home"
+        AWAY = "AWAY", "Away"
+        DRAW = "DRAW", "Draw"
+
+    api_id = models.IntegerField(unique=True)
+
+    gameweek = models.ForeignKey(
+        Gameweek,
+        on_delete=models.CASCADE,
+        related_name="matches",
+    )
+
+    home_team = models.ForeignKey(
+        Team,
+        on_delete=models.PROTECT,
+        related_name="home_matches",
+    )
+
+    away_team = models.ForeignKey(
+        Team,
+        on_delete=models.PROTECT,
+        related_name="away_matches",
+    )
+
+    kickoff_at = models.DateTimeField()
+
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.SCHEDULED,
+    )
+
+    home_score = models.IntegerField(null=True, blank=True)
+    away_score = models.IntegerField(null=True, blank=True)
+
+    winner = models.CharField(
+        max_length=10,
+        choices=Winner.choices,
+        null=True,
+        blank=True,
+    )
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["kickoff_at"]
+
+    def __str__(self):
+        return f"{self.home_team} vs {self.away_team}"
