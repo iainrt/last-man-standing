@@ -139,3 +139,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # for testing password reset functionality
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# API Football Key
+API_FOOTBALL_KEY = config("API_FOOTBALL_KEY")
