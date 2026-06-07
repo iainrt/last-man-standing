@@ -20,34 +20,77 @@
 
 {% if memberships %}
 
-    <ul>
+    <table border="1">
 
-    {% for membership in memberships %}
+        <thead>
+            <tr>
+                <th>Competition</th>
+                <th>Members</th>
+                <th>Status</th>
+                <th>Season</th>
+                <th>Role</th>
+                <th>Joined</th>
+            </tr>
+        </thead>
 
-        <li>
+        <tbody>
 
-            <a href="{% url 'competition_detail' membership.competition.id %}">
-                {{ membership.competition.name }}
-            </a>
+            {% for membership in memberships %}
 
-            <br>
+                <tr>
 
-            {{ membership.competition.season }}
+                    <td>
+                        <a href="{% url 'competition_detail' membership.competition.id %}">
+                            {{ membership.competition.name }}
+                        </a>
+                    </td>
 
-            {% if membership.is_admin %}
-                (Admin)
-            {% endif %}
+                    <td>
+                        {{ membership.member_count }}
+                    </td>
 
-        </li>
+                    <td>
 
-    {% endfor %}
+                        <span>
+                            {% if membership.competition.is_locked %}
+                                🔒 Locked
+                            {% else %}
+                                🔓 Open
+                            {% endif %}
+                        </span>
 
-    </ul>
+                    </td>
+
+                    <td>
+                        {{ membership.competition.season }}
+                    </td>
+
+                    <td>
+
+                        {% if membership.is_admin %}
+                            Admin
+                        {% else %}
+                            Member
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ membership.joined_at|date:"d M Y H:i" }}
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
 
 {% else %}
 
     <p>
-        You are not a member of any competitions.
+        You are not currently a member of any competitions.
     </p>
 
 {% endif %}

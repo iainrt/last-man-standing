@@ -34,8 +34,13 @@ class Competition(models.Model):
     )
 
     is_active = models.BooleanField(default=True)
+    is_locked = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def regenerate_invite_code(self):
+        self.invite_code = generate_invite_code()
+        self.save(update_fields=["invite_code"])
 
     def __str__(self):
         return self.name
