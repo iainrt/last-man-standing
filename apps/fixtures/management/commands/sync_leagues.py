@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.conf import settings
 
 from apps.fixtures.models import League
 from apps.fixtures.services.api_football import api_football_get
@@ -16,7 +17,7 @@ class Command(BaseCommand):
     help = "Sync selected leagues from API-FOOTBALL"
 
     def handle(self, *args, **options):
-        season = 2025
+        season = settings.CURRENT_API_SEASON
 
         for league_config in LEAGUES:
             data = api_football_get(

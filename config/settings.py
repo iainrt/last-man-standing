@@ -142,3 +142,7 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # API Football Key
 API_FOOTBALL_KEY = config("API_FOOTBALL_KEY")
+
+# Season settings - updated at season change
+CURRENT_API_SEASON = config("CURRENT_API_SEASON", cast=int)
+CURRENT_SEASON_NAME = config("CURRENT_SEASON_NAME")
