@@ -76,6 +76,10 @@ class Gameweek(models.Model):
 
     number = models.PositiveIntegerField()
 
+    name = models.CharField(
+        max_length=100,
+    )
+
     deadline = models.DateTimeField()
 
     is_published = models.BooleanField(default=False)
