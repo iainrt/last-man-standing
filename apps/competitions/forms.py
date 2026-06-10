@@ -9,7 +9,12 @@ class CompetitionForm(forms.ModelForm):
         fields = [
             "name",
             "season",
+            "allow_joker",
         ]
+
+        labels = {
+            "allow_joker": "Allow one joker per player",
+        }
 
 class JoinCompetitionForm(forms.Form):
     invite_code = forms.CharField(

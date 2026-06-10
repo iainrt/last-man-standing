@@ -41,6 +41,7 @@ class CompetitionMemberAdmin(admin.ModelAdmin):
         "competition",
         "user",
         "is_admin",
+        "allow_joker",
         "is_eliminated",
         "joker_used",
         "joined_at",

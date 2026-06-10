@@ -21,6 +21,10 @@ class Competition(models.Model):
         related_name="competitions",
     )
 
+    allow_joker = models.BooleanField(
+        default=True,
+    )
+
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
