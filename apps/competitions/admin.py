@@ -16,6 +16,8 @@ class CompetitionAdmin(admin.ModelAdmin):
         "created_by",
         "invite_code",
         "is_active",
+        "is_locked",
+        "allow_joker",
         "created_at",
     )
 
@@ -41,7 +43,6 @@ class CompetitionMemberAdmin(admin.ModelAdmin):
         "competition",
         "user",
         "is_admin",
-        "allow_joker",
         "is_eliminated",
         "joker_used",
         "joined_at",
