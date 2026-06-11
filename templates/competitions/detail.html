@@ -95,102 +95,125 @@
 
 {% endif %}
 
-<hr>
+    <hr>
 
-<h2>Members</h2>
+    <h2>Current Gameweek</h2>
 
-<table border="1">
+    {% if current_competition_gameweek %}
+        <p>
+            {{ current_competition_gameweek.gameweek }}
+        </p>
 
-    <thead>
-        <tr>
-            <th>Screen Name</th>
-            <th>Favourite Team</th>
-            <th>Status</th>
-            <th>Role</th>
-            <th>Joined</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
+        <p>
+            Deadline:
+            {{ current_competition_gameweek.deadline|date:"d M Y H:i" }}
+        </p>
 
-    <tbody>
+        <p>
+            Pick page coming next.
+        </p>
+    {% else %}
+        <p>
+            No gameweek is currently open for picks.
+        </p>
+    {% endif %}
 
-        {% for member in members %}
+    <hr>
 
+    <h2>Members</h2>
+
+    <table border="1">
+
+        <thead>
             <tr>
-
-                <td>
-                    {{ member.user.profile.screen_name }}
-                </td>
-
-                <td>
-                    {{ member.user.profile.favourite_team|default:"-" }}
-                </td>
-
-                <td>
-                    {% if member.is_eliminated %}
-                        Eliminated
-                    {% else %}
-                        Active
-                    {% endif %}
-                </td>
-
-                <td>
-                    {% if member.is_admin %}
-                        Admin
-                    {% else %}
-                        Member
-                    {% endif %}
-                </td>
-
-                <td>
-                    {{ member.joined_at|date:"d M Y H:i" }}
-                </td>
-
-                <td>
-
-                    {% if membership.is_admin and member.user != competition.created_by and member.user != user %}
-
-                        <form
-                            method="post"
-                            action="{% url 'competition_remove_member' competition.id member.id %}"
-                        >
-                            {% csrf_token %}
-
-                            <button type="submit">
-                                Remove
-                            </button>
-                        </form>
-
-                    {% else %}
-
-                        -
-
-                    {% endif %}
-
-                </td>
-
+                <th>Screen Name</th>
+                <th>Favourite Team</th>
+                <th>Status</th>
+                <th>Role</th>
+                <th>Joined</th>
+                <th>Actions</th>
             </tr>
+        </thead>
 
-        {% empty %}
+        <tbody>
 
-            <tr>
-                <td colspan="6">
-                    No members found.
-                </td>
-            </tr>
+            {% for member in members %}
 
-        {% endfor %}
+                <tr>
 
-    </tbody>
+                    <td>
+                        {{ member.user.profile.screen_name }}
+                    </td>
 
-</table>
+                    <td>
+                        {{ member.user.profile.favourite_team|default:"-" }}
+                    </td>
 
-<hr>
+                    <td>
+                        {% if member.is_eliminated %}
+                            Eliminated
+                        {% else %}
+                            Active
+                        {% endif %}
+                    </td>
 
-<p>
-    <a href="{% url 'competition_list' %}">
-        Back to Competitions
-    </a>
-</p>
+                    <td>
+                        {% if member.is_admin %}
+                            Admin
+                        {% else %}
+                            Member
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {{ member.joined_at|date:"d M Y H:i" }}
+                    </td>
+
+                    <td>
+
+                        {% if membership.is_admin and member.user != competition.created_by and member.user != user %}
+
+                            <form
+                                method="post"
+                                action="{% url 'competition_remove_member' competition.id member.id %}"
+                            >
+                                {% csrf_token %}
+
+                                <button type="submit">
+                                    Remove
+                                </button>
+                            </form>
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+                    <td colspan="6">
+                        No members found.
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <hr>
+
+    <p>
+        <a href="{% url 'competition_list' %}">
+            Back to Competitions
+        </a>
+    </p>
 
 {% endblock %}

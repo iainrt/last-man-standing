@@ -7,6 +7,8 @@ from django.db.models import Count
 from .forms import CompetitionForm, JoinCompetitionForm
 from .models import Competition, CompetitionMember
 
+from apps.selections.services.selection_service import get_current_competition_gameweek
+
 
 @login_required
 def competition_list_view(request):
@@ -104,6 +106,8 @@ def competition_detail_view(request, competition_id):
         .order_by("is_eliminated", "joined_at")
     )
 
+    current_competition_gameweek = get_current_competition_gameweek(competition)
+
     return render(
         request,
         "competitions/detail.html",
@@ -111,6 +115,7 @@ def competition_detail_view(request, competition_id):
             "competition": competition,
             "membership": membership,
             "members": members,
+            "current_competition_gameweek": current_competition_gameweek,
         },
     )
 

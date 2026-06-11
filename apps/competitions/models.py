@@ -5,7 +5,7 @@ import secrets
 from django.conf import settings
 from django.db import models
 
-from apps.fixtures.models import Season
+from apps.fixtures.models import Season, Gameweek
 
 
 def generate_invite_code():
@@ -74,3 +74,29 @@ class CompetitionMember(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.competition.name}"
+    
+class CompetitionGameweek(models.Model):
+    competition = models.ForeignKey(
+        Competition,
+        on_delete=models.CASCADE,
+        related_name="competition_gameweeks",
+    )
+
+    gameweek = models.ForeignKey(
+        Gameweek,
+        on_delete=models.CASCADE,
+        related_name="competition_gameweeks",
+    )
+
+    is_published = models.BooleanField(default=False)
+
+    deadline = models.DateTimeField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("competition", "gameweek")
+        ordering = ["gameweek__number"]
+
+    def __str__(self):
+        return f"{self.competition.name} - {self.gameweek}"
