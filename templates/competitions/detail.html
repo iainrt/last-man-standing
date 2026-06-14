@@ -107,12 +107,19 @@
 
     {% if current_competition_gameweek %}
         <p>
-            {{ current_competition_gameweek.gameweek }}
+            <strong>
+                Gameweek {{ current_competition_gameweek.gameweek.number }}
+            </strong>
         </p>
 
         <p>
-            Deadline:
-            {{ current_competition_gameweek.deadline|date:"d M Y H:i" }}
+            First fixture:
+            {{ current_competition_gameweek.gameweek.deadline|date:"D d M Y H:i" }}
+        </p>
+
+        <p>
+            Pick deadline:
+            {{ current_competition_gameweek.deadline|date:"D d M Y H:i" }}
         </p>
 
         <p>
