@@ -36,14 +36,31 @@ class CompetitionGameweekForm(forms.ModelForm):
             "deadline": forms.DateTimeInput(
                 attrs={
                     "type": "datetime-local",
-                }
+                },
+                format="%Y-%m-%dT%H:%M",
             )
         }
 
     def __init__(self, *args, competition=None, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.fields["deadline"].input_formats = [
+            "%Y-%m-%dT%H:%M",
+        ]
+
         if competition is not None:
-            self.fields["gameweek"].queryset = Gameweek.objects.filter(
-                season=competition.season,
-            ).order_by("number")
+            self.fields["gameweek"].queryset = (
+                Gameweek.objects
+                .filter(season=competition.season)
+                .order_by("number")
+            )
+
+            self.fields["gameweek"].label_from_instance = (
+                self.gameweek_label_from_instance
+            )
+
+    def gameweek_label_from_instance(self, gameweek):
+        return (
+            f"Gameweek {gameweek.number} "
+            f"— starting {gameweek.deadline:%d %b %Y %H:%M}"
+        )

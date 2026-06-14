@@ -250,7 +250,9 @@ def manage_competition_gameweeks_view(request, competition_id):
     )
 
     if not user_is_competition_admin(request.user, competition):
-        return HttpResponseForbidden("You are not an admin of this competition.")
+        return HttpResponseForbidden(
+            "You are not an admin of this competition."
+        )
 
     competition_gameweeks = (
         CompetitionGameweek.objects
@@ -273,13 +275,15 @@ def manage_competition_gameweeks_view(request, competition_id):
                 competition=competition,
             ).update(is_published=False)
 
-            competition_gameweek, created = CompetitionGameweek.objects.update_or_create(
-                competition=competition,
-                gameweek=gameweek,
-                defaults={
-                    "deadline": deadline,
-                    "is_published": True,
-                },
+            competition_gameweek, created = (
+                CompetitionGameweek.objects.update_or_create(
+                    competition=competition,
+                    gameweek=gameweek,
+                    defaults={
+                        "deadline": deadline,
+                        "is_published": True,
+                    },
+                )
             )
 
             messages.success(
@@ -293,8 +297,28 @@ def manage_competition_gameweeks_view(request, competition_id):
             )
 
     else:
+        published_gameweek_ids = (
+            CompetitionGameweek.objects
+            .filter(competition=competition)
+            .values_list("gameweek_id", flat=True)
+        )
+
+        next_gameweek = (
+            competition.season.gameweeks
+            .exclude(id__in=published_gameweek_ids)
+            .order_by("number")
+            .first()
+        )
+
+        initial = {}
+
+        if next_gameweek:
+            initial["gameweek"] = next_gameweek
+            initial["deadline"] = next_gameweek.deadline
+
         form = CompetitionGameweekForm(
             competition=competition,
+            initial=initial,
         )
 
     return render(
