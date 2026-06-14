@@ -21,6 +21,18 @@ urlpatterns = [
     ),
     
     path(
+        "<int:competition_id>/gameweeks/",
+        views.manage_competition_gameweeks_view,
+        name="competition_gameweeks",
+    ),
+    
+    path(
+        "<int:competition_id>/gameweeks/<int:competition_gameweek_id>/unpublish/",
+        views.unpublish_competition_gameweek_view,
+        name="competition_gameweek_unpublish",
+    ),
+
+    path(
         "<int:competition_id>/",
         views.competition_detail_view,
         name="competition_detail",

@@ -4,8 +4,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponseForbidden
 from django.db.models import Count
 
-from .forms import CompetitionForm, JoinCompetitionForm
-from .models import Competition, CompetitionMember
+from .forms import CompetitionForm, JoinCompetitionForm, CompetitionGameweekForm
+from .models import Competition, CompetitionMember, CompetitionGameweek
 
 from apps.selections.services.selection_service import get_current_competition_gameweek
 
@@ -241,3 +241,96 @@ def remove_member_view(request, competition_id, member_id):
             messages.success(request, "Member removed.")
 
     return redirect("competition_detail", competition_id=competition.id)
+
+@login_required
+def manage_competition_gameweeks_view(request, competition_id):
+    competition = get_object_or_404(
+        Competition.objects.select_related("season"),
+        id=competition_id,
+    )
+
+    if not user_is_competition_admin(request.user, competition):
+        return HttpResponseForbidden("You are not an admin of this competition.")
+
+    competition_gameweeks = (
+        CompetitionGameweek.objects
+        .filter(competition=competition)
+        .select_related("gameweek")
+        .order_by("gameweek__number")
+    )
+
+    if request.method == "POST":
+        form = CompetitionGameweekForm(
+            request.POST,
+            competition=competition,
+        )
+
+        if form.is_valid():
+            gameweek = form.cleaned_data["gameweek"]
+            deadline = form.cleaned_data["deadline"]
+
+            CompetitionGameweek.objects.filter(
+                competition=competition,
+            ).update(is_published=False)
+
+            competition_gameweek, created = CompetitionGameweek.objects.update_or_create(
+                competition=competition,
+                gameweek=gameweek,
+                defaults={
+                    "deadline": deadline,
+                    "is_published": True,
+                },
+            )
+
+            messages.success(
+                request,
+                f"{competition_gameweek.gameweek} published for this competition.",
+            )
+
+            return redirect(
+                "competition_gameweeks",
+                competition_id=competition.id,
+            )
+
+    else:
+        form = CompetitionGameweekForm(
+            competition=competition,
+        )
+
+    return render(
+        request,
+        "competitions/gameweeks.html",
+        {
+            "competition": competition,
+            "form": form,
+            "competition_gameweeks": competition_gameweeks,
+        },
+    )
+
+
+@login_required
+def unpublish_competition_gameweek_view(request, competition_id, competition_gameweek_id):
+    competition = get_object_or_404(Competition, id=competition_id)
+
+    if not user_is_competition_admin(request.user, competition):
+        return HttpResponseForbidden("You are not an admin of this competition.")
+
+    competition_gameweek = get_object_or_404(
+        CompetitionGameweek,
+        id=competition_gameweek_id,
+        competition=competition,
+    )
+
+    if request.method == "POST":
+        competition_gameweek.is_published = False
+        competition_gameweek.save(update_fields=["is_published"])
+
+        messages.success(
+            request,
+            f"{competition_gameweek.gameweek} unpublished.",
+        )
+
+    return redirect(
+        "competition_gameweeks",
+        competition_id=competition.id,
+    )

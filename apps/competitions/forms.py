@@ -1,6 +1,8 @@
 from django import forms
 
-from .models import Competition
+from .models import Competition, CompetitionGameweek
+
+from apps.fixtures.models import Gameweek
 
 
 class CompetitionForm(forms.ModelForm):
@@ -21,3 +23,27 @@ class JoinCompetitionForm(forms.Form):
         max_length=12,
         label="Invite code",
     )
+
+class CompetitionGameweekForm(forms.ModelForm):
+    class Meta:
+        model = CompetitionGameweek
+        fields = [
+            "gameweek",
+            "deadline",
+        ]
+
+        widgets = {
+            "deadline": forms.DateTimeInput(
+                attrs={
+                    "type": "datetime-local",
+                }
+            )
+        }
+
+    def __init__(self, *args, competition=None, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if competition is not None:
+            self.fields["gameweek"].queryset = Gameweek.objects.filter(
+                season=competition.season,
+            ).order_by("number")

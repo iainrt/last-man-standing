@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Manage Gameweeks</h1>
+
+<p>
+    <strong>Competition:</strong>
+    {{ competition.name }}
+</p>
+
+<p>
+    <strong>Season:</strong>
+    {{ competition.season }}
+</p>
+
+<hr>
+
+<h2>Publish Gameweek</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">
+        Publish Gameweek
+    </button>
+</form>
+
+<hr>
+
+<h2>Published Gameweeks</h2>
+
+{% if competition_gameweeks %}
+
+    <table border="1">
+
+        <thead>
+            <tr>
+                <th>Gameweek</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for competition_gameweek in competition_gameweeks %}
+
+                <tr>
+                    <td>
+                        {{ competition_gameweek.gameweek }}
+                    </td>
+
+                    <td>
+                        {{ competition_gameweek.deadline|date:"d M Y H:i" }}
+                    </td>
+
+                    <td>
+                        {% if competition_gameweek.is_published %}
+                            Published
+                        {% else %}
+                            Not published
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if competition_gameweek.is_published %}
+                            <form
+                                method="post"
+                                action="{% url 'competition_gameweek_unpublish' competition.id competition_gameweek.id %}"
+                            >
+                                {% csrf_token %}
+                                <button type="submit">
+                                    Unpublish
+                                </button>
+                            </form>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+{% else %}
+
+    <p>
+        No gameweeks have been published for this competition yet.
+    </p>
+
+{% endif %}
+
+<hr>
+
+<p>
+    <a href="{% url 'competition_detail' competition.id %}">
+        Back to Competition
+    </a>
+</p>
+
+{% endblock %}
