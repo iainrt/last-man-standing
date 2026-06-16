@@ -35,5 +35,7 @@ urlpatterns = [
     path(
         "competitions/",
         include("apps.competitions.urls"),
-),
+    ),
+
+    path("", include("apps.selections.urls")),
 ]

@@ -1,6 +1,8 @@
 from django.utils import timezone
 
 from apps.competitions.models import CompetitionGameweek
+
+from apps.fixtures.models import Match
 from apps.selections.models import Selection
 
 
@@ -43,3 +45,28 @@ def can_use_joker(competition_member):
         competition_member.competition.allow_joker
         and not competition_member.joker_used
     )
+
+
+def get_matches_for_competition_gameweek(competition_gameweek):
+    return (
+        Match.objects
+        .filter(gameweek=competition_gameweek.gameweek)
+        .select_related("home_team", "away_team")
+        .order_by("kickoff_at")
+    )
+
+
+def get_existing_selection(competition_member, competition_gameweek):
+    return (
+        Selection.objects
+        .filter(
+            competition_member=competition_member,
+            competition_gameweek=competition_gameweek,
+        )
+        .select_related("team", "match")
+        .first()
+    )
+
+
+def deadline_has_passed(competition_gameweek):
+    return competition_gameweek.deadline <= timezone.now()
