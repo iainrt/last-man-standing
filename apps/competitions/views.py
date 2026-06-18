@@ -7,7 +7,14 @@ from django.db.models import Count
 from .forms import CompetitionForm, JoinCompetitionForm, CompetitionGameweekForm
 from .models import Competition, CompetitionMember, CompetitionGameweek
 
-from apps.selections.services.selection_service import get_current_competition_gameweek
+from apps.selections.services.selection_service import (
+    deadline_has_passed,
+    get_competition_gameweek_selections,
+    get_current_competition_gameweek,
+    get_existing_selection,
+    get_matches_for_competition_gameweek,
+    get_published_competition_gameweeks,
+)
 
 
 @login_required
@@ -108,6 +115,41 @@ def competition_detail_view(request, competition_id):
 
     current_competition_gameweek = get_current_competition_gameweek(competition)
 
+    published_gameweeks = get_published_competition_gameweeks(competition)
+
+    selected_competition_gameweek = current_competition_gameweek
+
+    selected_gameweek_id = request.GET.get("week")
+
+    if selected_gameweek_id:
+        selected_competition_gameweek = published_gameweeks.filter(
+            id=selected_gameweek_id,
+        ).first() or current_competition_gameweek
+
+    gameweek_matches = []
+    user_selection = None
+    all_selections = []
+    deadline_passed = False
+
+    if selected_competition_gameweek:
+        gameweek_matches = get_matches_for_competition_gameweek(
+            selected_competition_gameweek
+        )
+
+        user_selection = get_existing_selection(
+            membership,
+            selected_competition_gameweek,
+        )
+
+        deadline_passed = deadline_has_passed(selected_competition_gameweek)
+
+        if deadline_passed:
+            all_selections = get_competition_gameweek_selections(
+                selected_competition_gameweek
+            )
+
+    active_members_count = members.filter(is_eliminated=False).count()
+
     return render(
         request,
         "competitions/detail.html",
@@ -116,6 +158,13 @@ def competition_detail_view(request, competition_id):
             "membership": membership,
             "members": members,
             "current_competition_gameweek": current_competition_gameweek,
+            "published_gameweeks": published_gameweeks,
+            "selected_competition_gameweek": selected_competition_gameweek,
+            "gameweek_matches": gameweek_matches,
+            "user_selection": user_selection,
+            "all_selections": all_selections,
+            "deadline_passed": deadline_passed,
+            "active_members_count": active_members_count,
         },
     )
 

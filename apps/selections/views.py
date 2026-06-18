@@ -16,10 +16,7 @@ from apps.selections.services.selection_service import (
 
 @login_required
 def make_pick_view(request, competition_id, competition_gameweek_id):
-    competition = get_object_or_404(
-        Competition,
-        id=competition_id,
-    )
+    competition = get_object_or_404(Competition, id=competition_id)
 
     competition_member = get_object_or_404(
         CompetitionMember,
@@ -35,38 +32,27 @@ def make_pick_view(request, competition_id, competition_gameweek_id):
     )
 
     if competition_member.is_eliminated:
-        messages.error(
-            request,
-            "You have been eliminated from this competition.",
-        )
-        return redirect(
-            "competition_detail",
-            competition_id=competition.id,
-        )
+        messages.error(request, "You have been eliminated from this competition.")
+        return redirect("competition_detail", competition_id=competition.id)
 
     if deadline_has_passed(competition_gameweek):
-        messages.error(
-            request,
-            "The pick deadline has passed.",
-        )
-        return redirect(
-            "competition_detail",
-            competition_id=competition.id,
-        )
+        messages.error(request, "The pick deadline has passed.")
+        return redirect("competition_detail", competition_id=competition.id)
 
     existing_selection = get_existing_selection(
         competition_member,
         competition_gameweek,
     )
 
-
-    matches = get_matches_for_competition_gameweek(
-        competition_gameweek,
-    )
+    matches = get_matches_for_competition_gameweek(competition_gameweek)
 
     used_team_ids = set(
-        Selection.objects
-        .filter(competition_member=competition_member)
+        Selection.objects.filter(
+            competition_member=competition_member,
+        )
+        .exclude(
+            id=existing_selection.id if existing_selection else None,
+        )
         .values_list("team_id", flat=True)
     )
 
@@ -74,9 +60,8 @@ def make_pick_view(request, competition_id, competition_gameweek_id):
         request.POST or None,
         matches=matches,
         used_team_ids=used_team_ids,
-        can_use_joker=can_use_joker(competition_member) or (
-            existing_selection and existing_selection.is_joker
-        ),
+        can_use_joker=can_use_joker(competition_member)
+        or (existing_selection and existing_selection.is_joker),
     )
 
     if request.method == "POST" and form.is_valid():
@@ -88,16 +73,10 @@ def make_pick_view(request, competition_id, competition_gameweek_id):
             gameweek=competition_gameweek.gameweek,
         )
 
-        team = get_object_or_404(
-            Team,
-            id=team_id,
-        )
+        team = get_object_or_404(Team, id=team_id)
 
         if team not in [match.home_team, match.away_team]:
-            messages.error(
-                request,
-                "Selected team is not part of that fixture.",
-            )
+            messages.error(request, "Selected team is not part of that fixture.")
             return redirect(
                 "selection_make_pick",
                 competition_id=competition.id,
@@ -116,16 +95,13 @@ def make_pick_view(request, competition_id, competition_gameweek_id):
 
             if old_joker and not is_joker:
                 competition_member.joker_used = False
-                competition_member.save(update_fields=["joker_used"])
 
             if is_joker:
                 competition_member.joker_used = True
-                competition_member.save(update_fields=["joker_used"])
 
-            messages.success(
-                request,
-                f"Your pick has been updated: {team.name}.",
-            )
+            competition_member.save(update_fields=["joker_used"])
+
+            messages.success(request, f"Your pick has been updated: {team.name}.")
 
         else:
             Selection.objects.create(
@@ -140,24 +116,9 @@ def make_pick_view(request, competition_id, competition_gameweek_id):
                 competition_member.joker_used = True
                 competition_member.save(update_fields=["joker_used"])
 
-            messages.success(
-                request,
-                f"Your pick has been saved: {team.name}.",
-            )
+            messages.success(request, f"Your pick has been saved: {team.name}.")
 
-        if is_joker:
-            competition_member.joker_used = True
-            competition_member.save(update_fields=["joker_used"])
-
-        messages.success(
-            request,
-            f"Your pick has been saved: {team.name}.",
-        )
-
-        return redirect(
-            "competition_detail",
-            competition_id=competition.id,
-        )
+        return redirect("competition_detail", competition_id=competition.id)
 
     return render(
         request,
@@ -167,5 +128,6 @@ def make_pick_view(request, competition_id, competition_gameweek_id):
             "competition_gameweek": competition_gameweek,
             "matches": matches,
             "form": form,
+            "existing_selection": existing_selection,
         },
     )

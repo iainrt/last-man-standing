@@ -103,35 +103,215 @@
 
     <hr>
 
-    <h2>Current Gameweek</h2>
+<h2>Gameweeks</h2>
 
-    {% if current_competition_gameweek %}
-        <p>
-            <strong>
-                Gameweek {{ current_competition_gameweek.gameweek.number }}
-            </strong>
-        </p>
+{% if published_gameweeks %}
 
-        <p>
-            First fixture:
-            {{ current_competition_gameweek.gameweek.deadline|date:"D d M Y H:i" }}
-        </p>
-
-        <p>
-            Pick deadline:
-            {{ current_competition_gameweek.deadline|date:"D d M Y H:i" }}
-        </p>
-
-        <p>
-            <a href="{% url 'selection_make_pick' competition.id current_competition_gameweek.id %}">
-                Make Pick
+    <p>
+        {% for competition_gameweek in published_gameweeks %}
+            <a href="{% url 'competition_detail' competition.id %}?week={{ competition_gameweek.id }}">
+                Week {{ competition_gameweek.gameweek.number }}
             </a>
-        </p>
-    {% else %}
-        <p>
-            No gameweek is currently open for picks.
-        </p>
+            {% if not forloop.last %} | {% endif %}
+        {% endfor %}
+    </p>
+
+    {% if selected_competition_gameweek %}
+
+        <div style="border: 1px solid #999; padding: 1rem; margin-bottom: 1rem;">
+
+            <h3>
+                Week {{ selected_competition_gameweek.gameweek.number }}
+
+                {% if deadline_passed %}
+                    <span>🔒 Deadline passed</span>
+                {% else %}
+                    <span>🟢 Open for picks</span>
+                {% endif %}
+            </h3>
+
+            <p>
+                First fixture:
+                {{ selected_competition_gameweek.gameweek.deadline|date:"D d M Y H:i" }}
+            </p>
+
+            <p>
+                Pick deadline:
+                {{ selected_competition_gameweek.deadline|date:"D d M Y H:i" }}
+            </p>
+
+            <p>
+                Players remaining:
+                <strong>{{ active_members_count }}</strong>
+            </p>
+
+            {% if user_selection %}
+                <p>
+                    Your pick:
+                    <strong>{{ user_selection.team.name }}</strong>
+
+                    {% if user_selection.is_joker %}
+                        🃏
+                    {% endif %}
+
+                    {% if user_selection.result == "WIN" %}
+                        ✅
+                    {% elif user_selection.result == "LOSE" or user_selection.result == "DRAW_ELIMINATED" %}
+                        ❌
+                    {% elif user_selection.result == "DRAW_SAFE" %}
+                        ✅ 🃏
+                    {% else %}
+                        ⏳
+                    {% endif %}
+                </p>
+            {% else %}
+                <p>
+                    You have not made a pick for this week.
+                </p>
+            {% endif %}
+
+            {% if not deadline_passed and not membership.is_eliminated %}
+                <p>
+                    <a href="{% url 'selection_make_pick' competition.id selected_competition_gameweek.id %}">
+                        {% if user_selection %}
+                            Edit Pick
+                        {% else %}
+                            Make Pick
+                        {% endif %}
+                    </a>
+                </p>
+            {% endif %}
+
+            <hr>
+
+            <h4>Fixtures</h4>
+
+            {% if gameweek_matches %}
+
+                {% for match in gameweek_matches %}
+
+                    <div style="border: 1px solid #ccc; padding: 0.75rem; margin-bottom: 0.5rem;">
+
+                        <p>
+                            <strong>{{ match.home_team.name }}</strong>
+                            vs
+                            <strong>{{ match.away_team.name }}</strong>
+                        </p>
+
+                        <p>
+                            Kickoff:
+                            {{ match.kickoff_at|date:"D d M Y H:i" }}
+                        </p>
+
+                        <p>
+                            Status:
+                            {{ match.get_status_display }}
+
+                            {% if match.status == "FINISHED" %}
+                                —
+                                {{ match.home_score }} - {{ match.away_score }}
+                            {% endif %}
+                        </p>
+
+                        {% if user_selection and user_selection.match.id == match.id %}
+                            <p>
+                                Your selected team:
+                                <strong>{{ user_selection.team.name }}</strong>
+                            </p>
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>
+                    No fixtures found for this gameweek.
+                </p>
+
+            {% endif %}
+
+            {% if deadline_passed %}
+
+                <hr>
+
+                <h4>Player Picks</h4>
+
+                {% if all_selections %}
+
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Pick</th>
+                                <th>Joker</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for selection in all_selections %}
+
+                                <tr>
+                                    <td>
+                                        {{ selection.competition_member.user.profile.screen_name }}
+                                    </td>
+
+                                    <td>
+                                        {{ selection.team.name }}
+                                    </td>
+
+                                    <td>
+                                        {% if selection.is_joker %}
+                                            🃏
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if selection.result == "WIN" %}
+                                            ✅ Through
+                                        {% elif selection.result == "LOSE" %}
+                                            ❌ Eliminated
+                                        {% elif selection.result == "DRAW_ELIMINATED" %}
+                                            ❌ Draw - eliminated
+                                        {% elif selection.result == "DRAW_SAFE" %}
+                                            ✅ Joker saved
+                                        {% else %}
+                                            ⏳ Pending
+                                        {% endif %}
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                {% else %}
+
+                    <p>
+                        No player picks were submitted for this gameweek.
+                    </p>
+
+                {% endif %}
+
+            {% endif %}
+
+        </div>
+
     {% endif %}
+
+{% else %}
+
+    <p>
+        No gameweeks have been published yet.
+    </p>
+
+{% endif %}
 
     <hr>
 

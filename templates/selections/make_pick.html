@@ -2,7 +2,13 @@
 
 {% block content %}
 
-<h1>Make Pick</h1>
+<h1>
+    {% if existing_selection %}
+        Edit Pick
+    {% else %}
+        Make Pick
+    {% endif %}
+</h1>
 
 <p>
     <strong>Competition:</strong>
@@ -11,13 +17,24 @@
 
 <p>
     <strong>Gameweek:</strong>
-    Gameweek {{ competition_gameweek.gameweek.number }}
+    Week {{ competition_gameweek.gameweek.number }}
 </p>
 
 <p>
     <strong>Deadline:</strong>
     {{ competition_gameweek.deadline|date:"D d M Y H:i" }}
 </p>
+
+{% if existing_selection %}
+    <p>
+        Current pick:
+        <strong>{{ existing_selection.team.name }}</strong>
+
+        {% if existing_selection.is_joker %}
+            🃏 Joker played
+        {% endif %}
+    </p>
+{% endif %}
 
 <hr>
 
@@ -27,7 +44,11 @@
     {{ form.as_p }}
 
     <button type="submit">
-        Save Pick
+        {% if existing_selection %}
+            Update Pick
+        {% else %}
+            Save Pick
+        {% endif %}
     </button>
 </form>
 
