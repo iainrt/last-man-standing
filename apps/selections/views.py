@@ -59,15 +59,6 @@ def make_pick_view(request, competition_id, competition_gameweek_id):
         competition_gameweek,
     )
 
-    if existing_selection:
-        messages.info(
-            request,
-            "You have already made your pick for this gameweek.",
-        )
-        return redirect(
-            "competition_detail",
-            competition_id=competition.id,
-        )
 
     matches = get_matches_for_competition_gameweek(
         competition_gameweek,
@@ -83,7 +74,9 @@ def make_pick_view(request, competition_id, competition_gameweek_id):
         request.POST or None,
         matches=matches,
         used_team_ids=used_team_ids,
-        can_use_joker=can_use_joker(competition_member),
+        can_use_joker=can_use_joker(competition_member) or (
+            existing_selection and existing_selection.is_joker
+        ),
     )
 
     if request.method == "POST" and form.is_valid():
@@ -113,13 +106,44 @@ def make_pick_view(request, competition_id, competition_gameweek_id):
 
         is_joker = form.cleaned_data.get("is_joker", False)
 
-        Selection.objects.create(
-            competition_member=competition_member,
-            competition_gameweek=competition_gameweek,
-            match=match,
-            team=team,
-            is_joker=is_joker,
-        )
+        if existing_selection:
+            old_joker = existing_selection.is_joker
+
+            existing_selection.match = match
+            existing_selection.team = team
+            existing_selection.is_joker = is_joker
+            existing_selection.save()
+
+            if old_joker and not is_joker:
+                competition_member.joker_used = False
+                competition_member.save(update_fields=["joker_used"])
+
+            if is_joker:
+                competition_member.joker_used = True
+                competition_member.save(update_fields=["joker_used"])
+
+            messages.success(
+                request,
+                f"Your pick has been updated: {team.name}.",
+            )
+
+        else:
+            Selection.objects.create(
+                competition_member=competition_member,
+                competition_gameweek=competition_gameweek,
+                match=match,
+                team=team,
+                is_joker=is_joker,
+            )
+
+            if is_joker:
+                competition_member.joker_used = True
+                competition_member.save(update_fields=["joker_used"])
+
+            messages.success(
+                request,
+                f"Your pick has been saved: {team.name}.",
+            )
 
         if is_joker:
             competition_member.joker_used = True
