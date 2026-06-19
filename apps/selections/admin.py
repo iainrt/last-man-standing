@@ -1,6 +1,21 @@
 from django.contrib import admin
 
 from .models import Selection
+from .services.results_service import process_selection
+
+
+@admin.action(description="Process selected results")
+def process_selected_results(modeladmin, request, queryset):
+    processed_count = 0
+
+    for selection in queryset:
+        if process_selection(selection):
+            processed_count += 1
+
+    modeladmin.message_user(
+        request,
+        f"Processed {processed_count} selections.",
+    )
 
 
 @admin.register(Selection)
@@ -32,3 +47,7 @@ class SelectionAdmin(admin.ModelAdmin):
     )
 
     date_hierarchy = "submitted_at"
+
+    actions = [
+        process_selected_results,
+    ]
