@@ -101,6 +101,41 @@
 
 {% endif %}
 
+<hr>
+
+<h2>Competition Stats</h2>
+
+<div style="border: 1px solid #999; padding: 1rem; margin-bottom: 1rem;">
+
+    <p>
+        Players started:
+        <strong>{{ total_members_count }}</strong>
+    </p>
+
+    <p>
+        Players remaining:
+        <strong>{{ active_members_count }}</strong>
+    </p>
+
+    <p>
+        Eliminated:
+        <strong>{{ eliminated_members_count }}</strong>
+    </p>
+
+    {% if competition.allow_joker %}
+        <p>
+            Jokers used:
+            <strong>{{ joker_used_count }}</strong>
+        </p>
+
+        <p>
+            Jokers remaining:
+            <strong>{{ joker_remaining_count }}</strong>
+        </p>
+    {% endif %}
+
+</div>
+
     <hr>
 
 <h2>Gameweeks</h2>

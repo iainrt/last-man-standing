@@ -149,6 +149,10 @@ def competition_detail_view(request, competition_id):
             )
 
     active_members_count = members.filter(is_eliminated=False).count()
+    total_members_count = members.count()
+    eliminated_members_count = members.filter(is_eliminated=True).count()
+    joker_used_count = members.filter(joker_used=True).count()
+    joker_remaining_count = members.filter(joker_used=False).count()
 
     return render(
         request,
@@ -165,6 +169,10 @@ def competition_detail_view(request, competition_id):
             "all_selections": all_selections,
             "deadline_passed": deadline_passed,
             "active_members_count": active_members_count,
+            "total_members_count": total_members_count,
+            "eliminated_members_count": eliminated_members_count,
+            "joker_used_count": joker_used_count,
+            "joker_remaining_count": joker_remaining_count,
         },
     )
 
