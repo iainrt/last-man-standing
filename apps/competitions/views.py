@@ -114,22 +114,28 @@ def competition_detail_view(request, competition_id):
     )
 
     current_competition_gameweek = get_current_competition_gameweek(competition)
-
     published_gameweeks = get_published_competition_gameweeks(competition)
 
     selected_competition_gameweek = current_competition_gameweek
-
     selected_gameweek_id = request.GET.get("week")
 
     if selected_gameweek_id:
-        selected_competition_gameweek = published_gameweeks.filter(
-            id=selected_gameweek_id,
-        ).first() or current_competition_gameweek
+        selected_competition_gameweek = (
+            published_gameweeks.filter(id=selected_gameweek_id).first()
+            or current_competition_gameweek
+        )
 
     gameweek_matches = []
     user_selection = None
     all_selections = []
     deadline_passed = False
+
+    results_summary = {
+        "through": 0,
+        "eliminated": 0,
+        "joker_saved": 0,
+        "pending": 0,
+    }
 
     if selected_competition_gameweek:
         gameweek_matches = get_matches_for_competition_gameweek(
@@ -143,10 +149,23 @@ def competition_detail_view(request, competition_id):
 
         deadline_passed = deadline_has_passed(selected_competition_gameweek)
 
+        all_selections = get_competition_gameweek_selections(
+            selected_competition_gameweek
+        )
+
         if deadline_passed:
-            all_selections = get_competition_gameweek_selections(
-                selected_competition_gameweek
-            )
+            for selection in all_selections:
+                if selection.result == "WIN":
+                    results_summary["through"] += 1
+                elif selection.result in ["LOSE", "DRAW_ELIMINATED"]:
+                    results_summary["eliminated"] += 1
+                elif selection.result == "DRAW_SAFE":
+                    results_summary["through"] += 1
+                    results_summary["joker_saved"] += 1
+                else:
+                    results_summary["pending"] += 1
+        else:
+            all_selections = []
 
     active_members_count = members.filter(is_eliminated=False).count()
     total_members_count = members.count()
@@ -175,7 +194,6 @@ def competition_detail_view(request, competition_id):
             }
         )
 
-    # Sort leaderboard
     survivor_rows.sort(
         key=lambda row: (
             row["member"].is_eliminated,
@@ -197,6 +215,7 @@ def competition_detail_view(request, competition_id):
             "user_selection": user_selection,
             "all_selections": all_selections,
             "deadline_passed": deadline_passed,
+            "results_summary": results_summary,
             "active_members_count": active_members_count,
             "total_members_count": total_members_count,
             "eliminated_members_count": eliminated_members_count,

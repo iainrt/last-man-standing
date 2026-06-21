@@ -330,6 +330,41 @@
                         </tbody>
                     </table>
 
+                    <hr>
+
+                <h4>Results Summary</h4>
+
+                <div style="border: 1px solid #ccc; padding: 0.75rem; margin-bottom: 1rem;">
+
+                    <p>
+                        ✅ Through:
+                        <strong>{{ results_summary.through }}</strong>
+                    </p>
+
+                    <p>
+                        ❌ Eliminated:
+                        <strong>{{ results_summary.eliminated }}</strong>
+                    </p>
+
+                    {% if competition.allow_joker %}
+                        <p>
+                            🃏 Joker saves:
+                            <strong>{{ results_summary.joker_saved }}</strong>
+                        </p>
+                    {% endif %}
+
+                    <p>
+                        ⏳ Pending:
+                        <strong>{{ results_summary.pending }}</strong>
+                    </p>
+
+                    <p>
+                        Players remaining:
+                        <strong>{{ active_members_count }}</strong>
+                    </p>
+
+                </div>
+
                 {% else %}
 
                     <p>
