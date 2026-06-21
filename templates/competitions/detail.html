@@ -454,6 +454,10 @@
                     <td>
                         {% if row.member.is_eliminated %}
                             ❌ Eliminated
+
+                            {% if row.member.eliminated_in_competition_gameweek %}
+                                Week {{ row.member.eliminated_in_competition_gameweek.competition_week_number }}
+                            {% endif %}
                         {% else %}
                             ✅ Alive
                         {% endif %}

@@ -55,6 +55,7 @@ class CompetitionMemberAdmin(admin.ModelAdmin):
         "user",
         "is_admin",
         "is_eliminated",
+        "eliminated_in_competition_gameweek",
         "joker_used",
         "joined_at",
     )

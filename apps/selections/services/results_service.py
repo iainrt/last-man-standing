@@ -17,12 +17,17 @@ def process_selection(selection):
     if not picked_home and not picked_away:
         return False
 
+    member = selection.competition_member
+
     if match.winner == Match.Winner.DRAW:
         if selection.is_joker:
             selection.result = Selection.Result.DRAW_SAFE
         else:
             selection.result = Selection.Result.DRAW_ELIMINATED
-            selection.competition_member.is_eliminated = True
+            member.is_eliminated = True
+            member.eliminated_in_competition_gameweek = (
+                selection.competition_gameweek
+            )
 
     elif match.winner == Match.Winner.HOME and picked_home:
         selection.result = Selection.Result.WIN
@@ -32,12 +37,20 @@ def process_selection(selection):
 
     else:
         selection.result = Selection.Result.LOSE
-        selection.competition_member.is_eliminated = True
+        member.is_eliminated = True
+        member.eliminated_in_competition_gameweek = (
+            selection.competition_gameweek
+        )
 
     selection.processed = True
     selection.save(update_fields=["result", "processed"])
 
-    selection.competition_member.save(update_fields=["is_eliminated"])
+    member.save(
+        update_fields=[
+            "is_eliminated",
+            "eliminated_in_competition_gameweek",
+        ]
+    )
 
     return True
 

@@ -63,6 +63,14 @@ class CompetitionMember(models.Model):
         related_name="competition_memberships",
     )
 
+    eliminated_in_competition_gameweek = models.ForeignKey(
+        "CompetitionGameweek",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="eliminated_members",
+    )
+
     is_admin = models.BooleanField(default=False)
     is_eliminated = models.BooleanField(default=False)
     joker_used = models.BooleanField(default=False)
