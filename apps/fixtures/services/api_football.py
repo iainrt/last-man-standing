@@ -14,7 +14,7 @@ def api_football_get(endpoint, params=None):
     response = requests.get(
         f"{BASE_URL}/{endpoint}",
         headers={
-            "x-apisports-key": settings.API_FOOTBALL_KEY,
+            "x-apisports-key": settings.API_FOOTBALL_KEY.strip(),
         },
         params=params or {},
         timeout=30,
