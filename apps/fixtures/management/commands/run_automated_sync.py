@@ -8,8 +8,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Starting automated sync...")
 
-        self.stdout.write("Syncing fixtures...")
-        call_command("sync_fixtures")
+        self.stdout.write("Syncing recent fixtures...")
+        call_command("sync_recent_fixtures")
 
         self.stdout.write("Processing results...")
         call_command("process_results")
