@@ -273,6 +273,37 @@
 
             <hr>
 
+            <h4>Most Popular Pick</h4>
+
+            {% if deadline_passed %}
+
+                {% if most_popular_pick %}
+
+                    <div style="border: 1px solid #999; padding: 1rem; margin-bottom: 1rem;">
+                        <p>
+                            <strong>{{ most_popular_pick.team }}</strong>
+                        </p>
+
+                        <p>
+                            {{ most_popular_pick.count }}
+                            pick{{ most_popular_pick.count|pluralize }}
+                        </p>
+                    </div>
+
+                {% else %}
+
+                    <p>No picks submitted for this week.</p>
+
+                {% endif %}
+
+            {% else %}
+
+                <p>
+                    Most popular pick will be shown after the deadline.
+                </p>
+
+            {% endif %}
+
             <h4>Pick Popularity</h4>
 
             {% if deadline_passed %}

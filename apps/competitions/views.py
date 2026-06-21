@@ -139,6 +139,7 @@ def competition_detail_view(request, competition_id):
     }
 
     pick_popularity = []
+    most_popular_pick = None
 
     if selected_competition_gameweek:
         gameweek_matches = get_matches_for_competition_gameweek(
@@ -168,6 +169,9 @@ def competition_detail_view(request, competition_id):
             }
             for team, count in selection_counter.most_common()
         ]
+
+        if pick_popularity:
+            most_popular_pick = pick_popularity[0]
 
         if deadline_passed:
             for selection in all_selections:
@@ -239,6 +243,7 @@ def competition_detail_view(request, competition_id):
             "joker_remaining_count": joker_remaining_count,
             "survivor_rows": survivor_rows,
             "pick_popularity": pick_popularity,
+            "most_popular_pick": most_popular_pick,
         },
     )
 
