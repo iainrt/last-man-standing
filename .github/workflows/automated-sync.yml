@@ -27,6 +27,8 @@ jobs:
         run: uv run python manage.py run_automated_sync
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DEBUG: ${{ secrets.DEBUG }}
+
 
           DB_NAME: ${{ secrets.DB_NAME }}
           DB_USER: ${{ secrets.DB_USER }}
@@ -35,3 +37,6 @@ jobs:
           DB_PORT: ${{ secrets.DB_PORT }}
 
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+
+          CURRENT_API_SEASON: ${{ vars.CURRENT_API_SEASON }}
+          CURRENT_SEASON_NAME: ${{ vars.CURRENT_SEASON_NAME }}
