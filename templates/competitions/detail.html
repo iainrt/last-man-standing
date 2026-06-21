@@ -156,10 +156,10 @@
         <div style="border: 1px solid #999; padding: 1rem; margin-bottom: 1rem;">
 
             <h3>
-                Week {{ selected_competition_gameweek.competition_week_number }}
+                Week {{ competition_gameweek.competition_week_number }}
 
                 <small>
-                    League gameweek {{ competition_gameweek.gameweek.number }}
+                    League gameweek {{ selected_competition_gameweek.gameweek.number }}
                 </small>
 
                 {% if deadline_passed %}
@@ -271,6 +271,42 @@
 
             {% endif %}
 
+            <hr>
+
+            <h4>Pick Popularity</h4>
+
+            {% if deadline_passed %}
+
+                {% if pick_popularity %}
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>Team</th>
+                                <th>Picks</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for item in pick_popularity %}
+                                <tr>
+                                    <td>{{ item.team }}</td>
+                                    <td>{{ item.count }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No picks submitted for this week.</p>
+                {% endif %}
+
+            {% else %}
+
+                <p>
+                    Pick popularity will be shown after the deadline.
+                </p>
+
+            {% endif %}
+
             {% if deadline_passed %}
 
                 <hr>
@@ -330,7 +366,10 @@
                         </tbody>
                     </table>
 
-                    <hr>
+
+                
+
+                <hr>
 
                 <h4>Results Summary</h4>
 

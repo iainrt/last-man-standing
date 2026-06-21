@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponseForbidden
 from django.db.models import Count
+from collections import Counter
 
 from .forms import CompetitionForm, JoinCompetitionForm, CompetitionGameweekForm
 from .models import Competition, CompetitionMember, CompetitionGameweek
@@ -137,6 +138,8 @@ def competition_detail_view(request, competition_id):
         "pending": 0,
     }
 
+    pick_popularity = []
+
     if selected_competition_gameweek:
         gameweek_matches = get_matches_for_competition_gameweek(
             selected_competition_gameweek
@@ -152,6 +155,19 @@ def competition_detail_view(request, competition_id):
         all_selections = get_competition_gameweek_selections(
             selected_competition_gameweek
         )
+
+        selection_counter = Counter(
+            selection.team.name
+            for selection in all_selections
+        )
+
+        pick_popularity = [
+            {
+                "team": team,
+                "count": count,
+            }
+            for team, count in selection_counter.most_common()
+        ]
 
         if deadline_passed:
             for selection in all_selections:
@@ -222,6 +238,7 @@ def competition_detail_view(request, competition_id):
             "joker_used_count": joker_used_count,
             "joker_remaining_count": joker_remaining_count,
             "survivor_rows": survivor_rows,
+            "pick_popularity": pick_popularity,
         },
     )
 
