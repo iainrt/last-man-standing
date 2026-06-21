@@ -13,7 +13,7 @@ def get_current_competition_gameweek(competition):
             is_published=True,
         )
         .select_related("gameweek")
-        .order_by("gameweek__number")
+        .order_by("competition_week_number")
         .first()
     )
 
@@ -23,7 +23,7 @@ def get_published_competition_gameweeks(competition):
         CompetitionGameweek.objects
         .filter(competition=competition)
         .select_related("gameweek")
-        .order_by("gameweek__number")
+        .order_by("competition_week_number")
     )
 
 

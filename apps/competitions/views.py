@@ -154,6 +154,35 @@ def competition_detail_view(request, competition_id):
     joker_used_count = members.filter(joker_used=True).count()
     joker_remaining_count = members.filter(joker_used=False).count()
 
+    survivor_rows = []
+
+    for member in members:
+        weeks_survived = (
+            member.selections
+            .filter(
+                result__in=[
+                    "WIN",
+                    "DRAW_SAFE",
+                ]
+            )
+            .count()
+        )
+
+        survivor_rows.append(
+            {
+                "member": member,
+                "weeks_survived": weeks_survived,
+            }
+        )
+
+    # Sort leaderboard
+    survivor_rows.sort(
+        key=lambda row: (
+            row["member"].is_eliminated,
+            -row["weeks_survived"],
+        )
+    )
+
     return render(
         request,
         "competitions/detail.html",
@@ -173,6 +202,7 @@ def competition_detail_view(request, competition_id):
             "eliminated_members_count": eliminated_members_count,
             "joker_used_count": joker_used_count,
             "joker_remaining_count": joker_remaining_count,
+            "survivor_rows": survivor_rows,
         },
     )
 
@@ -332,16 +362,42 @@ def manage_competition_gameweeks_view(request, competition_id):
                 competition=competition,
             ).update(is_published=False)
 
-            competition_gameweek, created = (
-                CompetitionGameweek.objects.update_or_create(
+            existing_competition_gameweek = CompetitionGameweek.objects.filter(
+                competition=competition,
+                gameweek=gameweek,
+            ).first()
+
+            if existing_competition_gameweek:
+                competition_gameweek = existing_competition_gameweek
+                competition_gameweek.deadline = deadline
+                competition_gameweek.is_published = True
+                competition_gameweek.save(
+                    update_fields=[
+                        "deadline",
+                        "is_published",
+                    ]
+                )
+            else:
+                last_competition_gameweek = (
+                    CompetitionGameweek.objects
+                    .filter(competition=competition)
+                    .order_by("-competition_week_number")
+                    .first()
+                )
+
+                next_week_number = (
+                    1
+                    if last_competition_gameweek is None
+                    else last_competition_gameweek.competition_week_number + 1
+                )
+
+                competition_gameweek = CompetitionGameweek.objects.create(
                     competition=competition,
                     gameweek=gameweek,
-                    defaults={
-                        "deadline": deadline,
-                        "is_published": True,
-                    },
+                    competition_week_number=next_week_number,
+                    deadline=deadline,
+                    is_published=True,
                 )
-            )
 
             messages.success(
                 request,

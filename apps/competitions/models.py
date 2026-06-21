@@ -88,6 +88,8 @@ class CompetitionGameweek(models.Model):
         related_name="competition_gameweeks",
     )
 
+    competition_week_number = models.PositiveIntegerField()
+
     is_published = models.BooleanField(default=False)
 
     deadline = models.DateTimeField()
@@ -95,8 +97,22 @@ class CompetitionGameweek(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ("competition", "gameweek")
-        ordering = ["gameweek__number"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["competition", "gameweek"],
+                name="unique_gameweek_per_competition",
+            ),
+            models.UniqueConstraint(
+                fields=["competition", "competition_week_number"],
+                name="unique_week_number_per_competition",
+            ),
+        ]
+
+        ordering = ["competition_week_number"]
 
     def __str__(self):
-        return f"{self.competition.name} - {self.gameweek}"
+        return (
+            f"{self.competition.name} - "
+            f"Week {self.competition_week_number} "
+            f"({self.gameweek})"
+        )

@@ -10,6 +10,12 @@ class CompetitionMemberInline(admin.TabularInline):
 class CompetitionGameweekInline(admin.TabularInline):
     model = CompetitionGameweek
     extra = 0
+    fields = (
+        "competition_week_number",
+        "gameweek",
+        "deadline",
+        "is_published",
+    )
 
 
 @admin.register(Competition)
@@ -63,6 +69,7 @@ class CompetitionMemberAdmin(admin.ModelAdmin):
 class CompetitionGameweekAdmin(admin.ModelAdmin):
     list_display = (
         "competition",
+        "competition_week_number",
         "gameweek",
         "deadline",
         "is_published",
@@ -76,4 +83,9 @@ class CompetitionGameweekAdmin(admin.ModelAdmin):
     search_fields = (
         "competition__name",
         "gameweek__season__league__name",
+    )
+
+    ordering = (
+        "competition",
+        "competition_week_number",
     )

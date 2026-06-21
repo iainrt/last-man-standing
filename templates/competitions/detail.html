@@ -145,7 +145,7 @@
     <p>
         {% for competition_gameweek in published_gameweeks %}
             <a href="{% url 'competition_detail' competition.id %}?week={{ competition_gameweek.id }}">
-                Week {{ competition_gameweek.gameweek.number }}
+                Week {{ competition_gameweek.competition_week_number }}
             </a>
             {% if not forloop.last %} | {% endif %}
         {% endfor %}
@@ -156,7 +156,11 @@
         <div style="border: 1px solid #999; padding: 1rem; margin-bottom: 1rem;">
 
             <h3>
-                Week {{ selected_competition_gameweek.gameweek.number }}
+                Week {{ selected_competition_gameweek.competition_week_number }}
+
+                <small>
+                    League gameweek {{ competition_gameweek.gameweek.number }}
+                </small>
 
                 {% if deadline_passed %}
                     <span>🔒 Deadline passed</span>
@@ -350,86 +354,55 @@
 
     <hr>
 
-    <h2>Members</h2>
+    <h2>Players</h2>
 
     <table border="1">
 
         <thead>
             <tr>
-                <th>Screen Name</th>
-                <th>Favourite Team</th>
+                <th>Player</th>
                 <th>Status</th>
-                <th>Role</th>
-                <th>Joined</th>
-                <th>Actions</th>
+                <th>Joker</th>
+                <th>Weeks Survived</th>
             </tr>
         </thead>
 
         <tbody>
 
-            {% for member in members %}
+            {% for row in survivor_rows %}
 
                 <tr>
 
                     <td>
-                        {{ member.user.profile.screen_name }}
+                        {{ row.member.user.profile.screen_name }}
                     </td>
 
                     <td>
-                        {{ member.user.profile.favourite_team|default:"-" }}
-                    </td>
-
-                    <td>
-                        {% if member.is_eliminated %}
-                            Eliminated
+                        {% if row.member.is_eliminated %}
+                            ❌ Eliminated
                         {% else %}
-                            Active
+                            ✅ Alive
                         {% endif %}
                     </td>
 
                     <td>
-                        {% if member.is_admin %}
-                            Admin
-                        {% else %}
-                            Member
-                        {% endif %}
-                    </td>
+                        {% if competition.allow_joker %}
 
-                    <td>
-                        {{ member.joined_at|date:"d M Y H:i" }}
-                    </td>
-
-                    <td>
-
-                        {% if membership.is_admin and member.user != competition.created_by and member.user != user %}
-
-                            <form
-                                method="post"
-                                action="{% url 'competition_remove_member' competition.id member.id %}"
-                            >
-                                {% csrf_token %}
-
-                                <button type="submit">
-                                    Remove
-                                </button>
-                            </form>
+                            {% if row.member.joker_used %}
+                                🃏 Used
+                            {% else %}
+                                Available
+                            {% endif %}
 
                         {% else %}
-
                             -
-
                         {% endif %}
-
                     </td>
 
-                </tr>
-
-            {% empty %}
-
-                <tr>
-                    <td colspan="6">
-                        No members found.
+                    <td>
+                        {{ row.weeks_survived }}
                     </td>
+
                 </tr>
 
             {% endfor %}
