@@ -103,53 +103,58 @@
 
 <hr>
 
-<h2>Competition Stats</h2>
+<h2 class="mb-4 text-2xl font-bold">Competition Stats</h2>
 
-<div style="border: 1px solid #999; padding: 1rem; margin-bottom: 1rem;">
+    <div class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
-    <p>
-        Players started:
-        <strong>{{ total_members_count }}</strong>
-    </p>
+        <div class="rounded-xl bg-white p-4 shadow">
+            <p class="text-sm text-slate-500">Players started</p>
+            <p class="text-3xl font-bold">{{ total_members_count }}</p>
+        </div>
 
-    <p>
-        Players remaining:
-        <strong>{{ active_members_count }}</strong>
-    </p>
+        <div class="rounded-xl bg-white p-4 shadow">
+            <p class="text-sm text-slate-500">Players remaining</p>
+            <p class="text-3xl font-bold text-emerald-700">{{ active_members_count }}</p>
+        </div>
 
-    <p>
-        Eliminated:
-        <strong>{{ eliminated_members_count }}</strong>
-    </p>
+        <div class="rounded-xl bg-white p-4 shadow">
+            <p class="text-sm text-slate-500">Eliminated</p>
+            <p class="text-3xl font-bold text-red-700">{{ eliminated_members_count }}</p>
+        </div>
 
-    {% if competition.allow_joker %}
-        <p>
-            Jokers used:
-            <strong>{{ joker_used_count }}</strong>
-        </p>
+        {% if competition.allow_joker %}
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">Jokers used</p>
+                <p class="text-3xl font-bold">{{ joker_used_count }}</p>
+                <p class="text-sm text-slate-500">
+                    {{ joker_remaining_count }} remaining
+                </p>
+            </div>
+        {% endif %}
 
-        <p>
-            Jokers remaining:
-            <strong>{{ joker_remaining_count }}</strong>
-        </p>
-    {% endif %}
+    </div>
 
-</div>
-
-    <hr>
+<hr>
 
 <h2>Gameweeks</h2>
 
 {% if published_gameweeks %}
 
-    <p>
+    <div class="mb-4 flex flex-wrap gap-2">
         {% for competition_gameweek in published_gameweeks %}
-            <a href="{% url 'competition_detail' competition.id %}?week={{ competition_gameweek.id }}">
+            <a
+                href="{% url 'competition_detail' competition.id %}?week={{ competition_gameweek.id }}"
+                class="rounded-full px-4 py-2 text-sm font-semibold shadow
+                    {% if selected_competition_gameweek.id == competition_gameweek.id %}
+                        bg-slate-900 text-white
+                    {% else %}
+                        bg-white text-slate-700 hover:bg-slate-200
+                    {% endif %}"
+            >
                 Week {{ competition_gameweek.competition_week_number }}
             </a>
-            {% if not forloop.last %} | {% endif %}
         {% endfor %}
-    </p>
+    </div>
 
     {% if selected_competition_gameweek %}
 
