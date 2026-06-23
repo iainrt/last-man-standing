@@ -4,68 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Last Man Standing</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
 
-    <nav>
-        <a href="{% url 'home' %}">
-            Home
-        </a>
+<body class="min-h-screen bg-slate-100 text-slate-900">
 
-        {% if user.is_authenticated %}
-
-            |
-            <a href="{% url 'competition_list' %}">
-                Competitions
-            </a>
-            |
-
-            <a href="{% url 'profile' %}">
-                Profile
+    <header class="bg-slate-900 text-white shadow">
+        <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+            <a href="{% url 'home' %}" class="text-lg font-bold">
+                Last Man Standing
             </a>
 
-            |
+            <nav class="flex items-center gap-4 text-sm">
+                <a href="{% url 'home' %}" class="hover:text-emerald-300">
+                    Home
+                </a>
 
-            <form
-                method="post"
-                action="{% url 'logout' %}"
-                style="display:inline;"
-            >
-                {% csrf_token %}
-                <button type="submit">
-                    Logout
-                </button>
-            </form>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'competition_list' %}" class="hover:text-emerald-300">
+                        Competitions
+                    </a>
 
-        {% else %}
+                    <a href="{% url 'profile' %}" class="hover:text-emerald-300">
+                        Profile
+                    </a>
 
-            |
-            <a href="{% url 'login' %}">
-                Login
-            </a>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="hover:text-emerald-300">
+                            Logout
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-emerald-300">
+                        Login
+                    </a>
 
-            |
+                    <a href="{% url 'register' %}" class="hover:text-emerald-300">
+                        Register
+                    </a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
 
-            <a href="{% url 'register' %}">
-                Register
-            </a>
+    <main class="mx-auto max-w-6xl px-4 py-6">
 
-        {% endif %}
-    </nav>
-
-    <hr>
-
-    {% if messages %}
-        {% for message in messages %}
-            <div>
-                {{ message }}
+        {% if messages %}
+            <div class="mb-6 space-y-2">
+                {% for message in messages %}
+                    <div class="rounded-lg border border-slate-300 bg-white px-4 py-3 shadow-sm">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-        <hr>
-    {% endif %}
+        {% endif %}
 
-    {% block content %}
-    {% endblock %}
+        {% block content %}
+        {% endblock %}
+
+    </main>
 
 </body>
 </html>
