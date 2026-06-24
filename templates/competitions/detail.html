@@ -337,6 +337,16 @@
 
             <h4>Pick Popularity</h4>
 
+            <div class="overflow-x-auto rounded-xl bg-white shadow">
+                <table class="min-w-full divide-y divide-slate-200">
+
+                    <thead class="bg-slate-100">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Team</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Picks</th>
+                        </tr>
+                    </thead>
+
             {% if deadline_passed %}
 
                 {% if pick_popularity %}
@@ -373,34 +383,36 @@
 
                 <hr>
 
-                <h4>Player Picks</h4>
+                <h4 class="mb-3 text-xl font-bold">Player Picks</h4>
 
                 {% if all_selections %}
 
-                    <table border="1">
-                        <thead>
+                    <div class="overflow-x-auto rounded-xl bg-white shadow">
+                        <table class="min-w-full divide-y divide-slate-200">
+                        
+                            <thead class="bg-slate-100">
                             <tr>
-                                <th>Player</th>
-                                <th>Pick</th>
-                                <th>Joker</th>
-                                <th>Result</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Player</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Pick</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Joker</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Result</th>
                             </tr>
                         </thead>
 
-                        <tbody>
+                        <tbody class="divide-y divide-slate-100">
 
                             {% for selection in all_selections %}
 
-                                <tr>
-                                    <td>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-4 py-3 text-sm">
                                         {{ selection.competition_member.user.profile.screen_name }}
                                     </td>
 
-                                    <td>
+                                    <td class="px-4 py-3 text-sm">
                                         {{ selection.team.name }}
                                     </td>
 
-                                    <td>
+                                    <td class="px-4 py-3 text-sm">
                                         {% if selection.is_joker %}
                                             🃏
                                         {% else %}
@@ -408,7 +420,7 @@
                                         {% endif %}
                                     </td>
 
-                                    <td>
+                                    <td class="px-4 py-3 text-sm">
                                         {% if selection.result == "WIN" %}
                                             ✅ Through
                                         {% elif selection.result == "LOSE" %}
@@ -427,42 +439,36 @@
 
                         </tbody>
                     </table>
+                </div>
 
-
-                
 
                 <hr>
 
                 <h4>Results Summary</h4>
 
-                <div style="border: 1px solid #ccc; padding: 0.75rem; margin-bottom: 1rem;">
+                <div class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
-                    <p>
-                        ✅ Through:
-                        <strong>{{ results_summary.through }}</strong>
-                    </p>
+                    <div class="rounded-xl bg-white p-4 shadow">
+                        <p class="text-sm text-slate-500">Through</p>
+                        <p class="text-3xl font-bold text-emerald-700">{{ results_summary.through }}</p>
+                    </div>
 
-                    <p>
-                        ❌ Eliminated:
-                        <strong>{{ results_summary.eliminated }}</strong>
-                    </p>
+                    <div class="rounded-xl bg-white p-4 shadow">
+                        <p class="text-sm text-slate-500">Eliminated</p>
+                        <p class="text-3xl font-bold text-red-700">{{ results_summary.eliminated }}</p>
+                    </div>
 
                     {% if competition.allow_joker %}
-                        <p>
-                            🃏 Joker saves:
-                            <strong>{{ results_summary.joker_saved }}</strong>
-                        </p>
+                        <div class="rounded-xl bg-white p-4 shadow">
+                            <p class="text-sm text-slate-500">Joker saves</p>
+                            <p class="text-3xl font-bold">{{ results_summary.joker_saved }}</p>
+                        </div>
                     {% endif %}
 
-                    <p>
-                        ⏳ Pending:
-                        <strong>{{ results_summary.pending }}</strong>
-                    </p>
-
-                    <p>
-                        Players remaining:
-                        <strong>{{ active_members_count }}</strong>
-                    </p>
+                    <div class="rounded-xl bg-white p-4 shadow">
+                        <p class="text-sm text-slate-500">Pending</p>
+                        <p class="text-3xl font-bold text-slate-700">{{ results_summary.pending }}</p>
+                    </div>
 
                 </div>
 
