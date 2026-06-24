@@ -158,9 +158,9 @@
 
     {% if selected_competition_gameweek %}
 
-        <div style="border: 1px solid #999; padding: 1rem; margin-bottom: 1rem;">
+        <div class="mb-6 rounded-xl bg-white p-6 shadow">
 
-            <h3>
+            <h3 class="mb-4 text-2xl font-bold">
                 Week {{ competition_gameweek.competition_week_number }}
 
                 <small>
@@ -168,9 +168,13 @@
                 </small>
 
                 {% if deadline_passed %}
-                    <span>🔒 Deadline passed</span>
+                    <span class="ml-2 rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-700">
+                        🔒 Deadline passed
+                    </span>
                 {% else %}
-                    <span>🟢 Open for picks</span>
+                    <span class="ml-2 rounded-full bg-emerald-100 px-3 py-1 text-sm font-medium text-emerald-700">
+                        🟢 Open for picks
+                    </span>
                 {% endif %}
             </h3>
 
@@ -190,33 +194,48 @@
             </p>
 
             {% if user_selection %}
-                <p>
-                    Your pick:
-                    <strong>{{ user_selection.team.name }}</strong>
+            <div class="my-4 rounded-xl border-2 border-emerald-200 bg-emerald-50 p-4">
 
-                    {% if user_selection.is_joker %}
-                        🃏
-                    {% endif %}
+                <p class="text-sm text-slate-600">
+                    Your Pick
+                </p>
 
-                    {% if user_selection.result == "WIN" %}
-                        ✅
-                    {% elif user_selection.result == "LOSE" or user_selection.result == "DRAW_ELIMINATED" %}
-                        ❌
-                    {% elif user_selection.result == "DRAW_SAFE" %}
-                        ✅ 🃏
+                <p class="text-xl font-bold">
+                    {% if user_selection %}
+                        {{ user_selection.team.name }}
                     {% else %}
-                        ⏳
+                        No pick submitted
                     {% endif %}
                 </p>
-            {% else %}
-                <p>
-                    You have not made a pick for this week.
+
+                <p class="mt-2">
+                    {% if user_selection %}
+
+                        {% if user_selection.result == "WIN" %}
+                            ✅ Through
+                        {% elif user_selection.result == "LOSE" %}
+                            ❌ Eliminated
+                        {% elif user_selection.result == "DRAW_ELIMINATED" %}
+                            ❌ Draw - eliminated
+                        {% elif user_selection.result == "DRAW_SAFE" %}
+                            🃏 Joker saved
+                        {% else %}
+                            ⏳ Pending
+                        {% endif %}
+
+                    {% endif %}
                 </p>
+
             {% endif %}
+
+            </div>
 
             {% if not deadline_passed and not membership.is_eliminated %}
                 <p>
-                    <a href="{% url 'selection_make_pick' competition.id selected_competition_gameweek.id %}">
+                    <a
+                        href="{% url 'selection_make_pick' competition.id selected_competition_gameweek.id %}"
+                        class="inline-block rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700"
+                    >
                         {% if user_selection %}
                             Edit Pick
                         {% else %}
