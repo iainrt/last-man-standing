@@ -2,55 +2,59 @@
 
 {% block content %}
 
-<h1>
-    {{ competition.name }}
+<div class="mb-6 rounded-xl bg-white p-6 shadow">
 
-    <span>
-        {% if competition.is_locked %}
-            🔒 Locked
-        {% else %}
-            🔓 Open
-        {% endif %}
-    </span>
-</h1>
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
-<p>
-    <strong>Season:</strong>
-    {{ competition.season }}
-</p>
+        <div>
+            <h1 class="text-3xl font-bold">
+                {{ competition.name }}
+            </h1>
 
-<p>
-    <strong>Created By:</strong>
-    {{ competition.created_by.username }}
-</p>
+            <p class="mt-1 text-sm text-slate-500">
+                {{ competition.season }}
+            </p>
+        </div>
 
-<p>
-    <strong>Active:</strong>
-    {{ competition.is_active|yesno:"Yes,No" }}
-</p>
+        <div>
+            {% if competition.is_locked %}
+                <span class="rounded-full bg-red-100 px-3 py-2 text-sm font-medium text-red-700">
+                    🔒 Locked
+                </span>
+            {% else %}
+                <span class="rounded-full bg-emerald-100 px-3 py-2 text-sm font-medium text-emerald-700">
+                    🔓 Open
+                </span>
+            {% endif %}
+        </div>
 
-<p>
-    <strong>Locked:</strong>
-    {{ competition.is_locked|yesno:"Yes,No" }}
-</p>
+    </div>
 
-{% if not competition.is_locked or membership.is_admin %}
-    <p>
-        <strong>Invite Code:</strong>
-        {{ competition.invite_code }}
-    </p>
-{% else %}
-    <p>
-        <strong>Invite Code:</strong>
-        Hidden because this competition is locked.
-    </p>
-{% endif %}
+</div>
+
+<div class="mb-6 rounded-xl bg-white p-4 shadow">
+
+    <div class="grid gap-3 md:grid-cols-2">
+
+        <p>
+            <strong>Created By:</strong>
+            {{ competition.created_by.username }}
+        </p>
+
+        <p>
+            <strong>Invite Code:</strong>
+            {{ competition.invite_code }}
+        </p>
+
+    </div>
+
+</div>
 
 {% if membership.is_admin %}
 
     <hr>
 
-    <h2>Admin Controls</h2>
+    <h2 class="mb-4 text-2xl font-bold">Admin Controls</h2>
 
     {% if competition.is_locked %}
 
@@ -60,7 +64,10 @@
         >
             {% csrf_token %}
 
-            <button type="submit">
+            <button
+                type="submit"
+                class="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-700"
+            >
                 Unlock Competition
             </button>
         </form>
@@ -73,13 +80,19 @@
         >
             {% csrf_token %}
 
-            <button type="submit">
+            <button
+                type="submit"
+                class="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-700"
+            >
                 Lock Competition
             </button>
         </form>
 
         <p>
-            <a href="{% url 'competition_gameweeks' competition.id %}">
+            <a
+                href="{% url 'competition_gameweeks' competition.id %}"
+                class="inline-block rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-700"
+            >
                 Manage Gameweeks
             </a>
         </p>
@@ -94,7 +107,10 @@
     >
         {% csrf_token %}
 
-        <button type="submit">
+        <button
+            type="submit"
+            class="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-700"
+        >
             Regenerate Invite Code
         </button>
     </form>
@@ -136,7 +152,7 @@
 
 <hr>
 
-<h2>Gameweeks</h2>
+<h2 class="mb-4 text-2xl font-bold">Gameweeks</h2>
 
 {% if published_gameweeks %}
 
