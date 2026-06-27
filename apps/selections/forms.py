@@ -2,6 +2,8 @@ from django import forms
 
 from apps.selections.models import Selection
 
+from apps.core.forms import apply_form_control_styles
+
 
 class SelectionForm(forms.Form):
     match_team = forms.ChoiceField(
@@ -52,3 +54,5 @@ class SelectionForm(forms.Form):
 
         if not can_use_joker:
             self.fields.pop("is_joker")
+
+        apply_form_control_styles(self)

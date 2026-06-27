@@ -4,6 +4,8 @@ from .models import Competition, CompetitionGameweek
 
 from apps.fixtures.models import Gameweek
 
+from apps.core.forms import apply_form_control_styles
+
 
 class CompetitionForm(forms.ModelForm):
     class Meta:
@@ -14,15 +16,26 @@ class CompetitionForm(forms.ModelForm):
             "allow_joker",
         ]
 
-        labels = {
-            "allow_joker": "Allow one joker per player",
-        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        apply_form_control_styles(self)
+
 
 class JoinCompetitionForm(forms.Form):
     invite_code = forms.CharField(
         max_length=12,
         label="Invite code",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Enter invite code",
+            }
+        ),
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        apply_form_control_styles(self)
+
 
 class CompetitionGameweekForm(forms.ModelForm):
     class Meta:
@@ -58,6 +71,8 @@ class CompetitionGameweekForm(forms.ModelForm):
             self.fields["gameweek"].label_from_instance = (
                 self.gameweek_label_from_instance
             )
+        
+        apply_form_control_styles(self)
 
     def gameweek_label_from_instance(self, gameweek):
         return (

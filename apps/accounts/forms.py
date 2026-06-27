@@ -6,6 +6,8 @@ from apps.fixtures.models import Team
 
 from .models import Profile
 
+from apps.core.forms import apply_form_control_styles
+
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -26,6 +28,11 @@ class RegisterForm(UserCreationForm):
             "password2",
         )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        apply_form_control_styles(self)
+
+
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
@@ -33,3 +40,7 @@ class ProfileForm(forms.ModelForm):
             "screen_name",
             "favourite_team",
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        apply_form_control_styles(self)
