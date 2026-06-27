@@ -46,6 +46,10 @@ class Competition(models.Model):
         self.invite_code = generate_invite_code()
         self.save(update_fields=["invite_code"])
 
+    def lock(self):
+        self.is_locked = True
+        self.save(update_fields=["is_locked"])
+
     def __str__(self):
         return self.name
 
