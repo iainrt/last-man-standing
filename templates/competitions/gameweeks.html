@@ -2,21 +2,21 @@
 
 {% block content %}
 
-<h1>Manage Gameweeks</h1>
+<h1 class="mb-6 text-3xl font-bold text-slate-900">Manage Gameweeks</h1>
 
-<p>
+<p class="text-slate-700">
     <strong>Competition:</strong>
     {{ competition.name }}
 </p>
 
-<p>
+<p class="text-slate-700">
     <strong>Season:</strong>
     {{ competition.season }}
 </p>
 
 <hr>
 
-<h2>Publish Gameweek</h2>
+<h2 class="mb-4 text-2xl font-bold text-slate-800">Publish Gameweek</h2>
 
 <form method="post">
     {% csrf_token %}
@@ -45,7 +45,7 @@
         Publish Gameweek
     </button>
 
-    <p>
+    <p class="text-slate-700">
     The deadline defaults to the first fixture in the selected gameweek.
     You can move it earlier if needed.
     </p>
@@ -54,7 +54,7 @@
 
 <hr>
 
-<h2>Published Gameweeks</h2>
+<h2 class="mb-4 text-2xl font-bold text-slate-800">Published Gameweeks</h2>
 
 {% if competition_gameweeks %}
 
@@ -116,7 +116,7 @@
 
 {% else %}
 
-    <p>
+    <p class="text-slate-700">
         No gameweeks have been published for this competition yet.
     </p>
 

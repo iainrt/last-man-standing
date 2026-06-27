@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1>Profile</h1>
+<h1 class="mb-6 text-3xl font-bold text-slate-900">Profile</h1>
 
 <p>
     <a href="{% url 'edit_profile' %}"
@@ -18,15 +18,15 @@
     </a>
 </p>
 
-<p>
+<p class="text-slate-700">
     Username: {{ user.username }}
 </p>
 
-<p>
+<p class="text-slate-700">
     Screen Name: {{ profile.screen_name }}
 </p>
 
-<p>
+<p class="text-slate-700">
     Favourite Team:
     {{ profile.favourite_team|default:"Not set" }}
 </p>

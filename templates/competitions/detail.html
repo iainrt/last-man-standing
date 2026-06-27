@@ -7,11 +7,11 @@
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
         <div>
-            <h1 class="text-3xl font-bold">
+            <h1 class="mb-6 text-3xl font-bold text-slate-900">
                 {{ competition.name }}
             </h1>
 
-            <p class="mt-1 text-sm text-slate-500">
+            <p class="text-slate-700">
                 {{ competition.season }}
             </p>
         </div>
@@ -36,12 +36,12 @@
 
     <div class="grid gap-3 md:grid-cols-2">
 
-        <p>
+        <p class="text-slate-700">
             <strong>Created By:</strong>
             {{ competition.created_by.username }}
         </p>
 
-        <p>
+        <p class="text-slate-700">
             <strong>Invite Code:</strong>
             {{ competition.invite_code }}
         </p>
@@ -54,7 +54,7 @@
 
     <hr>
 
-    <h2 class="mb-4 text-2xl font-bold">Admin Controls</h2>
+    <h2 class="mb-4 text-2xl font-bold text-slate-800">Admin Controls</h2>
 
     {% if competition.is_locked %}
 
@@ -123,7 +123,7 @@
 
 <hr>
 
-<h2 class="mb-4 text-2xl font-bold">Competition Stats</h2>
+<h2 class="mb-4 text-2xl font-bold text-slate-800">Competition Stats</h2>
 
     <div class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
@@ -156,7 +156,7 @@
 
 <hr>
 
-<h2 class="mb-4 text-2xl font-bold">Gameweeks</h2>
+<h2 class="mb-4 text-2xl font-bold text-slate-800">Gameweeks</h2>
 
 {% if published_gameweeks %}
 
@@ -180,7 +180,7 @@
 
         <div class="mb-6 rounded-xl bg-white p-6 shadow">
 
-            <h3 class="mb-4 text-2xl font-bold">
+            <h3 class="mb-3 text-xl font-semibold text-slate-800">
                 Week {{ competition_gameweek.competition_week_number }}
 
                 <small>
@@ -198,17 +198,17 @@
                 {% endif %}
             </h3>
 
-            <p>
+            <p class="text-slate-700">
                 First fixture:
                 {{ selected_competition_gameweek.gameweek.deadline|date:"D d M Y H:i" }}
             </p>
 
-            <p>
+            <p class="text-slate-700">
                 Pick deadline:
                 {{ selected_competition_gameweek.deadline|date:"D d M Y H:i" }}
             </p>
 
-            <p>
+            <p class="text-slate-700">
                 Players remaining:
                 <strong>{{ active_members_count }}</strong>
             </p>
@@ -216,11 +216,11 @@
             {% if user_selection %}
             <div class="my-4 rounded-xl border-2 border-emerald-200 bg-emerald-50 p-4">
 
-                <p class="text-sm text-slate-600">
+                <p class="text-slate-700">
                     Your Pick
                 </p>
 
-                <p class="text-xl font-bold">
+                <p class="text-slate-700">
                     {% if user_selection %}
                         {{ user_selection.team.name }}
                     {% else %}
@@ -267,7 +267,7 @@
 
             <hr>
 
-            <h4 class="mb-3 text-xl font-bold">Fixtures</h4>
+            <h4 class="mb-2 text-lg font-semibold text-slate-700">Fixtures</h4>
 
             {% if gameweek_matches %}
 
@@ -316,7 +316,7 @@
 
             {% else %}
 
-                <p>
+                <p class="text-slate-700">
                     No fixtures found for this gameweek.
                 </p>
 
@@ -324,18 +324,18 @@
 
             <hr>
 
-            <h4>Most Popular Pick</h4>
+            <h4 class="text-lg font-semibold text-slate-700">Most Popular Pick</h4>
 
             {% if deadline_passed %}
 
                 {% if most_popular_pick %}
 
                     <div style="border: 1px solid #999; padding: 1rem; margin-bottom: 1rem;">
-                        <p>
+                        <p class="text-slate-700">
                             <strong>{{ most_popular_pick.team }}</strong>
                         </p>
 
-                        <p>
+                        <p class="text-slate-700">
                             {{ most_popular_pick.count }}
                             pick{{ most_popular_pick.count|pluralize }}
                         </p>
@@ -343,19 +343,19 @@
 
                 {% else %}
 
-                    <p>No picks submitted for this week.</p>
+                    <p class="text-slate-700">No picks submitted for this week.</p>
 
                 {% endif %}
 
             {% else %}
 
-                <p>
+                <p class="text-slate-700">
                     Most popular pick will be shown after the deadline.
                 </p>
 
             {% endif %}
 
-            <h4>Pick Popularity</h4>
+            <h4 class="text-lg font-semibold text-slate-700">Pick Popularity</h4>
 
             <div class="overflow-x-auto rounded-xl bg-white shadow">
                 <table class="min-w-full divide-y divide-slate-200">
@@ -393,7 +393,7 @@
 
             {% else %}
 
-                <p>
+                <p class="text-slate-700">
                     Pick popularity will be shown after the deadline.
                 </p>
 
@@ -403,7 +403,7 @@
 
                 <hr>
 
-                <h4 class="mb-3 text-xl font-bold">Player Picks</h4>
+                <h4 class="mb-2 text-lg font-semibold text-slate-700">Player Picks</h4>
 
                 {% if all_selections %}
 
@@ -464,7 +464,7 @@
 
                 <hr>
 
-                <h4>Results Summary</h4>
+                <h4 class="text-lg font-semibold text-slate-700">Results Summary</h4>
 
                 <div class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
@@ -494,7 +494,7 @@
 
                 {% else %}
 
-                    <p>
+                    <p class="text-slate-700">
                         No player picks were submitted for this gameweek.
                     </p>
 
@@ -508,7 +508,7 @@
 
 {% else %}
 
-    <p>
+    <p class="text-slate-700">
         No gameweeks have been published yet.
     </p>
 
@@ -516,7 +516,7 @@
 
     <hr>
 
-    <h2 class="mb-4 text-2xl font-bold">Players</h2>
+    <h2 class="mb-4 text-2xl font-bold text-slate-800">Players</h2>
 
     <div class="overflow-x-auto rounded-xl bg-white shadow">
         <table class="min-w-full divide-y divide-slate-200">
