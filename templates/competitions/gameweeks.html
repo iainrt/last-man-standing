@@ -40,7 +40,8 @@
         </div>
     {% endfor %}
 
-    <button type="submit">
+    <button type="submit"
+        class="rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700">
         Publish Gameweek
     </button>
 
@@ -96,7 +97,8 @@
                                 action="{% url 'competition_gameweek_unpublish' competition.id competition_gameweek.id %}"
                             >
                                 {% csrf_token %}
-                                <button type="submit">
+                                <button type="submit"
+                                        class="rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700">
                                     Unpublish
                                 </button>
                             </form>
@@ -123,7 +125,8 @@
 <hr>
 
 <p>
-    <a href="{% url 'competition_detail' competition.id %}">
+    <a href="{% url 'competition_detail' competition.id %}"
+        class="rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700">
         Back to Competition
     </a>
 </p>

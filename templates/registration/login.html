@@ -8,13 +8,15 @@
     {% csrf_token %}
     {{ form.as_p }}
 
-    <button type="submit">
+    <button type="submit"
+            class="rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700">
         Login
     </button>
 </form>
 
 <p>
-    <a href="{% url 'password_reset' %}">
+    <a href="{% url 'password_reset' %}"
+        class="text-sm font-medium text-slate-700 hover:text-slate-900">
         Forgotten your password?
     </a>
 </p>
