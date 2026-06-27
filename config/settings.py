@@ -112,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Login and Logout Redirect URLs
-LOGIN_REDIRECT_URL = "/accounts/profile/"
+LOGIN_REDIRECT_URL = "/competitions/"
 LOGOUT_REDIRECT_URL = "/"
 
 
