@@ -1,0 +1,91 @@
+/* ===========================================================
+   Buttons
+   =========================================================== */
+
+.btn-primary {
+    @apply inline-block rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700 transition;
+}
+
+.btn-secondary {
+    @apply inline-block rounded-lg bg-white px-4 py-2 font-medium text-slate-800 shadow hover:bg-slate-100 transition;
+}
+
+.btn-success {
+    @apply inline-block rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-700 transition;
+}
+
+.btn-danger {
+    @apply inline-block rounded-lg bg-red-600 px-4 py-2 font-medium text-white hover:bg-red-700 transition;
+}
+
+
+/* ===========================================================
+   Cards
+   =========================================================== */
+
+.card {
+    @apply rounded-xl bg-white p-6 shadow;
+}
+
+.card-small {
+    @apply rounded-xl bg-white p-4 shadow;
+}
+
+
+/* ===========================================================
+   Tables
+   =========================================================== */
+
+.table-wrapper {
+    @apply overflow-x-auto rounded-xl bg-white shadow;
+}
+
+.table {
+    @apply min-w-full divide-y divide-slate-200;
+}
+
+.table thead {
+    @apply bg-slate-100;
+}
+
+.table th {
+    @apply px-4 py-3 text-left text-sm font-semibold text-slate-700;
+}
+
+.table td {
+    @apply px-4 py-3 text-sm;
+}
+
+.table tbody {
+    @apply divide-y divide-slate-100;
+}
+
+
+/* ===========================================================
+   Badges
+   =========================================================== */
+
+.badge-success {
+    @apply rounded-full bg-emerald-100 px-3 py-1 text-sm font-medium text-emerald-700;
+}
+
+.badge-danger {
+    @apply rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-700;
+}
+
+.badge-neutral {
+    @apply rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700;
+}
+
+
+/* ===========================================================
+   Forms
+   =========================================================== */
+
+.form-input {
+    @apply w-full rounded-lg border border-slate-300 px-3 py-2 shadow-sm focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-300;
+}
+
+.form-checkbox {
+    @apply h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-300;
+}
