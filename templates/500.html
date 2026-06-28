@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mx-auto max-w-xl rounded-xl bg-white p-8 text-center shadow">
+
+    <h1 class="mb-4 text-3xl font-bold text-slate-900">
+        Something Went Wrong
+    </h1>
+
+    <p class="text-slate-600">
+        We've encountered an unexpected error.
+    </p>
+
+    <p class="mt-2 text-sm text-slate-500">
+        Please try again in a few moments. If the problem continues, please let the competition administrator know.
+    </p>
+
+    <div class="mt-8">
+        <a
+            href="{% url 'home' %}"
+            class="inline-block rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700"
+        >
+            Back Home
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mx-auto max-w-xl rounded-xl bg-white p-8 text-center shadow">
+
+    <h1 class="mb-4 text-3xl font-bold text-slate-900">
+        Page Not Found
+    </h1>
+
+    <p class="text-slate-600">
+        Sorry, we couldn't find the page you were looking for.
+    </p>
+
+    <p class="mt-2 text-sm text-slate-500">
+        It may have been moved or the link may be incorrect.
+    </p>
+
+    <div class="mt-8">
+        <a
+            href="{% url 'competition_list' %}"
+            class="inline-block rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700"
+        >
+            Back to Competitions
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}
