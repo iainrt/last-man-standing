@@ -42,6 +42,28 @@ class Competition(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Status(models.TextChoices):
+        ACTIVE = "ACTIVE", "Active"
+        COMPLETE = "COMPLETE", "Complete"
+        VOID = "VOID", "No Winner"
+
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.ACTIVE,
+    )
+
+    has_multiple_winners = models.BooleanField(default=False)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    winning_competition_gameweek = models.ForeignKey(
+        "CompetitionGameweek",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="completed_competitions",
+    )
+
     def regenerate_invite_code(self):
         self.invite_code = generate_invite_code()
         self.save(update_fields=["invite_code"])
@@ -128,3 +150,33 @@ class CompetitionGameweek(models.Model):
             f"Week {self.competition_week_number} "
             f"({self.gameweek})"
         )
+    
+
+class CompetitionWinner(models.Model):
+    competition = models.ForeignKey(
+        Competition,
+        on_delete=models.CASCADE,
+        related_name="winners",
+    )
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="competition_wins",
+    )
+
+    competition_gameweek = models.ForeignKey(
+        CompetitionGameweek,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="winners",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("competition", "user")
+
+    def __str__(self):
+        return f"{self.user.username} - {self.competition.name}"

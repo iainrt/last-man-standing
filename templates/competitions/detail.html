@@ -50,6 +50,60 @@
 
 </div>
 
+{% if competition.status == "COMPLETE" %}
+
+<div class="mb-6 rounded-xl bg-amber-50 p-6 shadow">
+
+    <h2 class="mb-3 text-2xl font-bold text-amber-900">
+        🏆 Competition Complete
+    </h2>
+
+    {% if competition.has_multiple_winners %}
+        <p class="text-amber-900">
+            Joint Winners
+        </p>
+    {% else %}
+        <p class="text-amber-900">
+            Winner
+        </p>
+    {% endif %}
+
+    <ul class="mt-3 list-inside list-disc font-bold">
+
+        {% for winner in winners %}
+            <li>{{ winner.user.profile.screen_name }}</li>
+        {% endfor %}
+
+    </ul>
+
+    {% if competition.winning_competition_gameweek %}
+        <p class="mt-2 text-amber-900">
+            Decided in Week {{ competition.winning_competition_gameweek.competition_week_number }}
+        </p>
+    {% endif %}
+
+</div>
+
+{% elif competition.status == "VOID" %}
+
+<div class="mb-6 rounded-xl bg-slate-100 p-6 shadow">
+
+    <h2 class="mb-3 text-2xl font-bold text-slate-700">
+        Competition Finished
+    </h2>
+
+    <p>
+        No winner.
+    </p>
+
+    <p class="mt-2 text-slate-600">
+        All players were eliminated in Week {{ competition.winning_competition_gameweek.competition_week_number }}.
+    </p>
+
+</div>
+
+{% endif %}
+
 {% if membership.is_admin %}
 
     <hr>

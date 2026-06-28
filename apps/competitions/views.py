@@ -221,6 +221,11 @@ def competition_detail_view(request, competition_id):
         )
     )
 
+    winners = competition.winners.select_related(
+        "user",
+        "user__profile",
+    )
+
     return render(
         request,
         "competitions/detail.html",
@@ -244,6 +249,7 @@ def competition_detail_view(request, competition_id):
             "survivor_rows": survivor_rows,
             "pick_popularity": pick_popularity,
             "most_popular_pick": most_popular_pick,
+            "winners": winners,
         },
     )
 
