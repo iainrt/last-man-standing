@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+
+if [ ! -f .env ]; then
+  echo "Missing .env development file"
+  exit 1
+fi
+
+set -a
+source .env
+set +a
+
+python manage.py "$@"

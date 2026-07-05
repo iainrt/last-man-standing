@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -e
+
+if [ ! -f .env.production ]; then
+  echo "Missing .env.production file"
+  exit 1
+fi
+
+echo "You are about to run this against PRODUCTION:"
+echo "python manage.py $@"
+read -p "Type PRODUCTION to continue: " confirm
+
+if [ "$confirm" != "PRODUCTION" ]; then
+  echo "Cancelled."
+  exit 1
+fi
+
+set -a
+source .env.production
+set +a
+
+python manage.py "$@"
