@@ -3,20 +3,54 @@ from django.db import models
 
 
 class Achievement(models.Model):
-    class Visibility(models.TextChoices):
+    class Discovery(models.TextChoices):
         VISIBLE = "VISIBLE", "Visible"
         HIDDEN = "HIDDEN", "Hidden"
 
+    class Difficulty(models.TextChoices):
+        BRONZE = "BRONZE", "Bronze"
+        SILVER = "SILVER", "Silver"
+        GOLD = "GOLD", "Gold"
+        PLATINUM = "PLATINUM", "Platinum"
+        LEGENDARY = "LEGENDARY", "Legendary"
+
+    class Category(models.TextChoices):
+        GENERAL = "GENERAL", "General"
+        COMPETITION = "COMPETITION", "Competition"
+        PICKS = "PICKS", "Picks"
+        JOKER = "JOKER", "Joker"
+        COLLECTION = "COLLECTION", "Collection"
+        EXPLORATION = "EXPLORATION", "Exploration"
+        SPECIAL = "SPECIAL", "Special"
+
     code = models.SlugField(max_length=100, unique=True)
-
     name = models.CharField(max_length=100)
-
     description = models.TextField()
 
-    visibility = models.CharField(
+    discovery = models.CharField(
         max_length=20,
-        choices=Visibility.choices,
-        default=Visibility.VISIBLE,
+        choices=Discovery.choices,
+        default=Discovery.VISIBLE,
+    )
+
+    category = models.CharField(
+        max_length=30,
+        choices=Category.choices,
+        default=Category.GENERAL,
+    )
+
+    difficulty = models.CharField(
+        max_length=30,
+        choices=Difficulty.choices,
+        default=Difficulty.BRONZE,
+    )
+
+    xp_reward = models.PositiveIntegerField(default=0)
+
+    icon = models.CharField(
+        max_length=50,
+        blank=True,
+        help_text="Emoji or icon name used in the UI.",
     )
 
     clue = models.TextField(
@@ -24,18 +58,20 @@ class Achievement(models.Model):
         help_text="Optional clue shown for hidden achievements.",
     )
 
-    start_date = models.DateTimeField(
+    tracking_start = models.DateTimeField(
         null=True,
         blank=True,
-        help_text="Only activity after this date counts.",
+        help_text=(
+            "Only activity on or after this date counts "
+            "towards this achievement."
+        ),
     )
 
     is_active = models.BooleanField(default=True)
-
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["category", "difficulty", "name"]
 
     def __str__(self):
         return self.name

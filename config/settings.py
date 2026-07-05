@@ -55,12 +55,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "apps.accounts",
-    "apps.competitions",
-    "apps.core",
-    "apps.fixtures",
-    "apps.selections",
-    "apps.achievements",
+    "apps.accounts.apps.AccountsConfig",
+    "apps.competitions.apps.CompetitionsConfig",
+    "apps.core.apps.CoreConfig",
+    "apps.fixtures.apps.FixturesConfig",
+    "apps.selections.apps.SelectionsConfig",
+    "apps.achievements.apps.AchievementsConfig",
 ]
 
 MIDDLEWARE = [

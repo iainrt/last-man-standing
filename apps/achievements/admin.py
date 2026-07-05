@@ -8,13 +8,18 @@ class AchievementAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "code",
-        "visibility",
+        "category",
+        "difficulty",
+        "discovery",
+        "xp_reward",
         "is_active",
-        "start_date",
+        "tracking_start",
     )
 
     list_filter = (
-        "visibility",
+        "category",
+        "difficulty",
+        "discovery",
         "is_active",
     )
 
