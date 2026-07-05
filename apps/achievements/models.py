@@ -67,6 +67,11 @@ class Achievement(models.Model):
         ),
     )
 
+    target = models.PositiveIntegerField(
+        default=1,
+        help_text="Progress required to unlock this achievement.",
+    )
+
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -90,11 +95,31 @@ class UserAchievement(models.Model):
         related_name="user_achievements",
     )
 
-    unlocked_at = models.DateTimeField(auto_now_add=True)
+    progress = models.PositiveIntegerField(default=0)
+
+    is_unlocked = models.BooleanField(default=False)
+
+    unlocked_at = models.DateTimeField(
+        null=True,
+        blank=True,
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ("user", "achievement")
-        ordering = ["-unlocked_at"]
+        ordering = ["-unlocked_at", "achievement__name"]
 
     def __str__(self):
         return f"{self.user.username} - {self.achievement.name}"
+
+    @property
+    def progress_percentage(self):
+        if self.achievement.target <= 0:
+            return 0
+
+        percentage = (self.progress / self.achievement.target) * 100
+
+        return min(100, int(percentage))

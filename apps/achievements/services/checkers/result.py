@@ -1,4 +1,4 @@
-from apps.achievements.services.unlock_service import unlock_achievement
+from apps.achievements.services.unlock_service import unlock_achievement, update_achievement_progress
 from apps.selections.models import Selection
 
 
