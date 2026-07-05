@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "apps.core",
     "apps.fixtures",
     "apps.selections",
+    "apps.achievements",
 ]
 
 MIDDLEWARE = [
