@@ -13,6 +13,10 @@ from apps.selections.services.selection_service import (
     get_matches_for_competition_gameweek,
 )
 
+from apps.achievements.services.checkers.selection import (
+    check_selection_achievements,
+)
+
 
 @login_required
 def make_pick_view(request, competition_id, competition_gameweek_id):
@@ -93,6 +97,15 @@ def make_pick_view(request, competition_id, competition_gameweek_id):
             existing_selection.is_joker = is_joker
             existing_selection.save()
 
+            achievement_results = check_selection_achievements(existing_selection)
+
+            for achievement_result in achievement_results:
+                if achievement_result and achievement_result.should_notify:
+                    messages.success(
+                        request,
+                        f"Achievement unlocked: {achievement_result.user_achievement.achievement.name}",
+                    )
+
             if old_joker and not is_joker:
                 competition_member.joker_used = False
 
@@ -104,19 +117,28 @@ def make_pick_view(request, competition_id, competition_gameweek_id):
             messages.success(request, f"Your pick has been updated: {team.name}.")
 
         else:
-            Selection.objects.create(
+            selection = Selection.objects.create(
                 competition_member=competition_member,
                 competition_gameweek=competition_gameweek,
                 match=match,
                 team=team,
                 is_joker=is_joker,
-            )
+)
 
             if is_joker:
                 competition_member.joker_used = True
                 competition_member.save(update_fields=["joker_used"])
 
             messages.success(request, f"Your pick has been saved: {team.name}.")
+
+            achievement_results = check_selection_achievements(selection)
+
+            for achievement_result in achievement_results:
+                if achievement_result and achievement_result.should_notify:
+                    messages.success(
+                        request,
+                        f"Achievement unlocked: {achievement_result.user_achievement.achievement.name}",
+                    )
 
         return redirect("competition_detail", competition_id=competition.id)
 
