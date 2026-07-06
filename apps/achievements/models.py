@@ -45,6 +45,8 @@ class Achievement(models.Model):
         default=Difficulty.BRONZE,
     )
 
+    display_order = models.PositiveIntegerField(default=1000)
+
     xp_reward = models.PositiveIntegerField(default=0)
 
     icon = models.CharField(
@@ -76,7 +78,12 @@ class Achievement(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ["category", "difficulty", "name"]
+        ordering = [
+            "display_order",
+            "category",
+            "difficulty",
+            "name",
+        ]
 
     def __str__(self):
         return self.name

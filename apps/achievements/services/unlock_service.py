@@ -1,6 +1,24 @@
+from dataclasses import dataclass
+
 from django.utils import timezone
 
 from apps.achievements.models import Achievement, UserAchievement
+
+
+@dataclass
+class AchievementProgressResult:
+    user_achievement: UserAchievement | None
+    achievement_code: str
+    progress_changed: bool = False
+    unlocked_now: bool = False
+    already_unlocked: bool = False
+    not_found: bool = False
+    not_active: bool = False
+    not_started: bool = False
+
+    @property
+    def should_notify(self):
+        return self.unlocked_now
 
 
 def update_achievement_progress(
@@ -10,17 +28,31 @@ def update_achievement_progress(
 ):
     achievement = Achievement.objects.filter(
         code=achievement_code,
-        is_active=True,
     ).first()
 
     if achievement is None:
-        return None, False
+        return AchievementProgressResult(
+            user_achievement=None,
+            achievement_code=achievement_code,
+            not_found=True,
+        )
+
+    if not achievement.is_active:
+        return AchievementProgressResult(
+            user_achievement=None,
+            achievement_code=achievement_code,
+            not_active=True,
+        )
 
     if (
         achievement.tracking_start
         and timezone.now() < achievement.tracking_start
     ):
-        return None, False
+        return AchievementProgressResult(
+            user_achievement=None,
+            achievement_code=achievement_code,
+            not_started=True,
+        )
 
     user_achievement, created = UserAchievement.objects.get_or_create(
         user=user,
@@ -32,7 +64,13 @@ def update_achievement_progress(
     )
 
     if user_achievement.is_unlocked:
-        return user_achievement, False
+        return AchievementProgressResult(
+            user_achievement=user_achievement,
+            achievement_code=achievement_code,
+            already_unlocked=True,
+        )
+
+    old_progress = user_achievement.progress
 
     user_achievement.progress += amount
 
@@ -44,6 +82,8 @@ def update_achievement_progress(
         user_achievement.unlocked_at = timezone.now()
         unlocked_now = True
 
+    progress_changed = user_achievement.progress != old_progress
+
     user_achievement.save(
         update_fields=[
             "progress",
@@ -53,7 +93,12 @@ def update_achievement_progress(
         ]
     )
 
-    return user_achievement, unlocked_now
+    return AchievementProgressResult(
+        user_achievement=user_achievement,
+        achievement_code=achievement_code,
+        progress_changed=progress_changed,
+        unlocked_now=unlocked_now,
+    )
 
 
 def unlock_achievement(user, achievement_code):

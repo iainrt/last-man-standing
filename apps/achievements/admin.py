@@ -6,6 +6,7 @@ from .models import Achievement, UserAchievement
 @admin.register(Achievement)
 class AchievementAdmin(admin.ModelAdmin):
     list_display = (
+        "display_order",
         "name",
         "code",
         "category",
@@ -14,6 +15,14 @@ class AchievementAdmin(admin.ModelAdmin):
         "xp_reward",
         "is_active",
         "tracking_start",
+    )
+
+    list_display_links = (
+        "name",
+    )
+
+    list_editable = (
+        "display_order",
     )
 
     list_filter = (
