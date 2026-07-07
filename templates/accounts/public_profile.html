@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mx-auto max-w-3xl">
+
+    <div class="rounded-xl bg-white p-6 shadow">
+
+        <h1 class="mb-6 text-3xl font-bold text-slate-900">
+            {{ profile_user.profile.screen_name }}
+        </h1>
+
+
+        {% if profile_user.profile.favourite_team %}
+            <p class="mt-2 text-slate-700">
+                <strong>Favourite team:</strong>
+                {{ profile_user.profile.favourite_team }}
+            </p>
+        {% endif %}
+
+        {% if is_own_profile %}
+            <p class="mt-6">
+                <a
+                    href="{% url 'edit_profile' %}"
+                    class="inline-block rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700"
+                >
+                    Edit Profile
+                </a>
+            </p>
+        {% endif %}
+
+    </div>
+
+    <div class="mt-6 rounded-xl bg-white p-6 shadow">
+
+        <h2 class="mb-4 text-2xl font-bold text-slate-800">
+            Achievements
+        </h2>
+
+        <p class="text-slate-600">
+            Achievements display coming next.
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login
-from django.shortcuts import render, redirect
+from django.contrib.auth import login, get_user_model
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import RegisterForm, ProfileForm
 
@@ -66,5 +66,37 @@ def edit_profile_view(request):
         "accounts/edit_profile.html",
         {
             "form": form,
+        },
+    )
+
+
+def public_profile_view(request, user_id):
+    User = get_user_model()
+
+    profile_user = get_object_or_404(
+        User.objects.select_related("profile"),
+        id=user_id,
+    )
+
+    is_own_profile = (
+        request.user.is_authenticated
+        and request.user == profile_user
+    )
+
+    if not profile_user.profile.is_public and not is_own_profile:
+        return render(
+            request,
+            "accounts/public_profile_private.html",
+            {
+                "profile_user": profile_user,
+            },
+        )
+
+    return render(
+        request,
+        "accounts/public_profile.html",
+        {
+            "profile_user": profile_user,
+            "is_own_profile": is_own_profile,
         },
     )

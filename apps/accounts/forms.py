@@ -36,10 +36,27 @@ class RegisterForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
+        
         fields = [
             "screen_name",
             "favourite_team",
+            "is_public",
         ]
+
+        labels = {
+            "is_public": (
+                "Allow other players to view my public profile, "
+                "achievements and statistics"
+            ),
+        }
+        
+        help_texts = {
+            "is_public": (
+                "If disabled, other players cannot view your profile. "
+                "Competition participation and screen name will still be visible."
+            ),
+        }
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

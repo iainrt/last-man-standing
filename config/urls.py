@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from apps.accounts.views import public_profile_view
+
 urlpatterns = [
     path("", include("apps.core.urls")),
 
@@ -38,4 +40,10 @@ urlpatterns = [
     ),
 
     path("", include("apps.selections.urls")),
+
+    path(
+        "players/<int:user_id>/",
+        public_profile_view,
+        name="public_profile",
+    ),
 ]
