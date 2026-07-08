@@ -12,6 +12,51 @@
     </p>
 </div>
 
+<div class="mb-6 rounded-xl bg-white p-6 shadow">
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+        <div>
+            <p class="text-sm text-slate-500">Completed</p>
+            <p class="text-3xl font-bold text-slate-900">
+                {{ completed_count }} / {{ total_achievements }}
+            </p>
+        </div>
+
+        <div>
+            <p class="text-sm text-slate-500">Completion</p>
+            <p class="text-3xl font-bold text-emerald-700">
+                {{ completion_percentage }}%
+            </p>
+        </div>
+
+        <div>
+            <p class="text-sm text-slate-500">Hidden discovered</p>
+            <p class="text-3xl font-bold text-slate-900">
+                {{ hidden_completed_count }} / {{ hidden_total_count }}
+            </p>
+        </div>
+
+        <div>
+            <p class="text-sm text-slate-500">XP earned</p>
+            <p class="text-3xl font-bold text-amber-700">
+                {{ xp_earned }}
+            </p>
+        </div>
+
+    </div>
+
+    <div class="mt-6">
+        <div class="h-3 overflow-hidden rounded-full bg-slate-200">
+            <div
+                class="h-full rounded-full bg-emerald-500"
+                style="width: {{ completion_percentage }}%;"
+            ></div>
+        </div>
+    </div>
+
+</div>
+
 <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 
     {% for card in achievement_cards %}
