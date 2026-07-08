@@ -33,6 +33,10 @@
                         Profile
                     </a>
 
+                    <a href="{% url 'achievement_list' %}" class="hover:text-emerald-300">
+                        Achievements
+                    </a>
+
                     <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
                         <button type="submit" class="hover:text-emerald-300">
