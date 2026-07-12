@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
 from apps.competitions.models import Competition, CompetitionMember, CompetitionGameweek
 from apps.fixtures.models import Match, Team
@@ -100,10 +101,20 @@ def make_pick_view(request, competition_id, competition_gameweek_id):
             achievement_results = check_selection_achievements(existing_selection)
 
             for achievement_result in achievement_results:
-                if achievement_result and achievement_result.should_notify:
+                if achievement_result.should_notify:
                     messages.success(
                         request,
-                        f"Achievement unlocked: {achievement_result.user_achievement.achievement.name}",
+                        (
+                            "Achievement unlocked: "
+                            f"{achievement_result.user_achievement.achievement.name}"
+                        ),
+                    )
+
+                    achievement_result.user_achievement.notification_seen_at = timezone.now()
+                    achievement_result.user_achievement.save(
+                        update_fields=[
+                            "notification_seen_at",
+                        ]
                     )
 
             if old_joker and not is_joker:
@@ -134,10 +145,20 @@ def make_pick_view(request, competition_id, competition_gameweek_id):
             achievement_results = check_selection_achievements(selection)
 
             for achievement_result in achievement_results:
-                if achievement_result and achievement_result.should_notify:
+                if achievement_result.should_notify:
                     messages.success(
                         request,
-                        f"Achievement unlocked: {achievement_result.user_achievement.achievement.name}",
+                        (
+                            "Achievement unlocked: "
+                            f"{achievement_result.user_achievement.achievement.name}"
+                        ),
+                    )
+
+                    achievement_result.user_achievement.notification_seen_at = timezone.now()
+                    achievement_result.user_achievement.save(
+                        update_fields=[
+                            "notification_seen_at",
+                        ]
                     )
 
         return redirect("competition_detail", competition_id=competition.id)

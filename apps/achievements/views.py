@@ -1,7 +1,9 @@
 from collections import OrderedDict
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.http import HttpResponseNotAllowed
+from django.shortcuts import render, redirect
+from django.utils import timezone
 
 from .models import Achievement, UserAchievement
 
@@ -114,3 +116,21 @@ def achievement_list_view(request):
             "completion_percentage": completion_percentage,
         },
     )
+
+
+@login_required
+def mark_achievement_notifications_seen(request):
+    if request.method != "POST":
+        return HttpResponseNotAllowed(["POST"])
+
+    UserAchievement.objects.filter(
+        user=request.user,
+        is_unlocked=True,
+        notification_seen_at__isnull=True,
+    ).update(
+        notification_seen_at=timezone.now(),
+    )
+
+    next_url = request.POST.get("next") or "achievement_list"
+
+    return redirect(next_url)

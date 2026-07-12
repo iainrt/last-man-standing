@@ -115,6 +115,11 @@ class UserAchievement(models.Model):
 
     updated_at = models.DateTimeField(auto_now=True)
 
+    notification_seen_at = models.DateTimeField(
+        null=True,
+        blank=True,
+    )
+
     class Meta:
         unique_together = ("user", "achievement")
         ordering = ["-unlocked_at", "achievement__name"]

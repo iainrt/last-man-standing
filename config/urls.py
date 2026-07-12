@@ -53,4 +53,10 @@ urlpatterns = [
         achievement_views.achievement_list_view,
         name="achievement_list",
     ),
+
+    path(
+        "achievements/notifications/seen/",
+        achievement_views.mark_achievement_notifications_seen,
+        name="achievement_notifications_seen",
+    ),
 ]
