@@ -1,6 +1,9 @@
 from apps.fixtures.models import Match
 from apps.selections.models import Selection
 from apps.competitions.services.winner_service import evaluate_competition_winner
+from apps.achievements.services.checkers.result import (
+    check_result_achievements,
+)
 
 
 def process_selection(selection):
@@ -52,6 +55,8 @@ def process_selection(selection):
             "eliminated_in_competition_gameweek",
         ]
     )
+
+    check_result_achievements(selection)
 
     return True
 
