@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
@@ -6,7 +8,7 @@ from .models import Achievement, UserAchievement
 
 @login_required
 def achievement_list_view(request):
-    achievements = (
+    achievements = list(
         Achievement.objects
         .filter(is_active=True)
         .order_by(
@@ -17,26 +19,26 @@ def achievement_list_view(request):
         )
     )
 
-    unlocked = {
+    user_achievements = {
         user_achievement.achievement_id: user_achievement
-        for user_achievement in UserAchievement.objects
-        .filter(user=request.user)
-        .select_related("achievement")
+        for user_achievement in (
+            UserAchievement.objects
+            .filter(user=request.user)
+            .select_related("achievement")
+        )
     }
 
-    achievement_cards = []
+    grouped_cards = OrderedDict()
+    hidden_cards = []
 
-    total_achievements = achievements.count()
+    total_achievements = len(achievements)
     completed_count = 0
     hidden_total_count = 0
     hidden_completed_count = 0
     xp_earned = 0
 
     for achievement in achievements:
-        user_achievement = unlocked.get(achievement.id)
-
-        if achievement.discovery == Achievement.Discovery.HIDDEN:
-            hidden_total_count += 1
+        user_achievement = user_achievements.get(achievement.id)
 
         if user_achievement:
             progress = user_achievement.progress
@@ -47,6 +49,9 @@ def achievement_list_view(request):
             percentage = 0
             is_unlocked = False
 
+        if achievement.discovery == Achievement.Discovery.HIDDEN:
+            hidden_total_count += 1
+
         if is_unlocked:
             completed_count += 1
             xp_earned += achievement.xp_reward
@@ -54,15 +59,28 @@ def achievement_list_view(request):
             if achievement.discovery == Achievement.Discovery.HIDDEN:
                 hidden_completed_count += 1
 
-        achievement_cards.append(
-            {
-                "achievement": achievement,
-                "user_achievement": user_achievement,
-                "progress": progress,
-                "percentage": percentage,
-                "is_unlocked": is_unlocked,
-            }
-        )
+        card = {
+            "achievement": achievement,
+            "user_achievement": user_achievement,
+            "progress": progress,
+            "percentage": percentage,
+            "is_unlocked": is_unlocked,
+        }
+
+        # Locked hidden achievements must not reveal their category.
+        if (
+            achievement.discovery == Achievement.Discovery.HIDDEN
+            and not is_unlocked
+        ):
+            hidden_cards.append(card)
+            continue
+
+        category_name = achievement.get_category_display()
+
+        grouped_cards.setdefault(
+            category_name,
+            [],
+        ).append(card)
 
     completion_percentage = 0
 
@@ -71,11 +89,23 @@ def achievement_list_view(request):
             (completed_count / total_achievements) * 100
         )
 
+    recently_unlocked = (
+        UserAchievement.objects
+        .filter(
+            user=request.user,
+            is_unlocked=True,
+        )
+        .select_related("achievement")
+        .order_by("-unlocked_at")[:5]
+    )
+
     return render(
         request,
         "achievements/list.html",
         {
-            "achievement_cards": achievement_cards,
+            "grouped_cards": grouped_cards,
+            "hidden_cards": hidden_cards,
+            "recently_unlocked": recently_unlocked,
             "total_achievements": total_achievements,
             "completed_count": completed_count,
             "hidden_total_count": hidden_total_count,
