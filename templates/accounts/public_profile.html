@@ -2,46 +2,120 @@
 
 {% block content %}
 
-<div class="mx-auto max-w-3xl">
+<div class="mx-auto max-w-5xl">
 
-    <div class="rounded-xl bg-white p-6 shadow">
+    <div class="mb-6 rounded-xl bg-white p-6 shadow">
 
-        <h1 class="mb-6 text-3xl font-bold text-slate-900">
-            {{ profile_user.profile.screen_name }}
-        </h1>
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
+            <div>
+                <h1 class="mb-2 text-3xl font-bold text-slate-900">
+                    {{ profile_user.profile.screen_name }}
+                </h1>
 
-        {% if profile_user.profile.favourite_team %}
-            <p class="mt-2 text-slate-700">
-                <strong>Favourite team:</strong>
-                {{ profile_user.profile.favourite_team }}
-            </p>
-        {% endif %}
+                {% if profile_user.profile.favourite_team %}
+                    <p class="text-slate-600">
+                        Supports
+                        <strong>
+                            {{ profile_user.profile.favourite_team }}
+                        </strong>
+                    </p>
+                {% endif %}
+            </div>
 
-        {% if is_own_profile %}
-            <p class="mt-6">
+            {% if is_own_profile %}
                 <a
                     href="{% url 'edit_profile' %}"
                     class="inline-block rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700"
                 >
                     Edit Profile
                 </a>
-            </p>
-        {% endif %}
+            {% endif %}
+
+        </div>
 
     </div>
 
-    <div class="mt-6 rounded-xl bg-white p-6 shadow">
+    <div class="mb-8 rounded-xl bg-white p-6 shadow">
+
+        <h2 class="mb-4 text-2xl font-bold text-slate-800">
+            Achievement Progress
+        </h2>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+
+            <div>
+                <p class="text-sm text-slate-500">
+                    Completed
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ unlocked_count }} / {{ total_active_achievements }}
+                </p>
+            </div>
+
+            <div>
+                <p class="text-sm text-slate-500">
+                    Completion
+                </p>
+
+                <p class="text-3xl font-bold text-emerald-700">
+                    {{ completion_percentage }}%
+                </p>
+            </div>
+
+            <div>
+                <p class="text-sm text-slate-500">
+                    Achievement XP
+                </p>
+
+                <p class="text-3xl font-bold text-amber-700">
+                    {{ achievement_xp }}
+                </p>
+            </div>
+
+        </div>
+
+        <div class="mt-6">
+            <div class="h-3 overflow-hidden rounded-full bg-slate-200">
+                <div
+                    class="h-full rounded-full bg-emerald-500"
+                    style="width: {{ completion_percentage }}%;"
+                ></div>
+            </div>
+        </div>
+
+    </div>
+
+    <section>
 
         <h2 class="mb-4 text-2xl font-bold text-slate-800">
             Achievements
         </h2>
 
-        <p class="text-slate-600">
-            Achievements display coming next.
-        </p>
+        {% if achievement_cards %}
 
-    </div>
+            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+
+                {% for card in achievement_cards %}
+                    {% include "accounts/_public_achievement_card.html" %}
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="rounded-xl bg-white p-6 shadow">
+
+                <p class="text-slate-600">
+                    {{ profile_user.profile.screen_name }} has not completed any achievements yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
 
 </div>
 

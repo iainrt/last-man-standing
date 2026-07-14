@@ -18,6 +18,15 @@
     </a>
 </p>
 
+<p class="mt-4">
+    <a
+        href="{% url 'public_profile' request.user.id %}"
+        class="inline-block rounded-lg bg-white px-4 py-2 font-medium text-slate-800 shadow hover:bg-slate-100"
+    >
+        View Public Profile
+    </a>
+</p>
+
 <p class="text-slate-700">
     Username: {{ user.username }}
 </p>
