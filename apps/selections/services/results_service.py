@@ -1,6 +1,9 @@
 from apps.fixtures.models import Match
 from apps.selections.models import Selection
 from apps.competitions.services.winner_service import evaluate_competition_winner
+from apps.achievements.services.checkers.result import (
+    check_result_achievements,
+)
 
 
 def process_selection(selection):
@@ -53,11 +56,13 @@ def process_selection(selection):
         ]
     )
 
+    check_result_achievements(selection)
+
     return True
 
 
 def process_pending_selections():
-    selections = (
+    selections = list(
         Selection.objects
         .filter(
             processed=False,
@@ -67,26 +72,26 @@ def process_pending_selections():
             "match",
             "team",
             "competition_member",
+            "competition_member__user",
+            "competition_gameweek",
+            "competition_gameweek__competition",
         )
     )
 
     processed_count = 0
-
-    for selection in selections:
-        if process_selection(selection):
-            processed_count += 1
-
     processed_competition_gameweeks = set()
 
     for selection in selections:
         if process_selection(selection):
             processed_count += 1
-            processed_competition_gameweeks.add(selection.competition_gameweek)
+            processed_competition_gameweeks.add(
+                selection.competition_gameweek
+            )
 
     for competition_gameweek in processed_competition_gameweeks:
         evaluate_competition_winner(
-            competition_gameweek.competition,
-            competition_gameweek,
+            competition=competition_gameweek.competition,
+            competition_gameweek=competition_gameweek,
         )
 
     return processed_count

@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mb-6">
+
+    <h1 class="mb-6 text-3xl font-bold text-slate-900">
+        Achievements
+    </h1>
+
+    <p class="text-slate-700">
+        Track your progress and discover hidden achievements.
+    </p>
+
+</div>
+
+<div class="mb-8 rounded-xl bg-white p-6 shadow">
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+        <div>
+            <p class="text-sm text-slate-500">
+                Completed
+            </p>
+
+            <p class="text-3xl font-bold text-slate-900">
+                {{ completed_count }} / {{ total_achievements }}
+            </p>
+        </div>
+
+        <div>
+            <p class="text-sm text-slate-500">
+                Completion
+            </p>
+
+            <p class="text-3xl font-bold text-emerald-700">
+                {{ completion_percentage }}%
+            </p>
+        </div>
+
+        <div>
+            <p class="text-sm text-slate-500">
+                Hidden discovered
+            </p>
+
+            <p class="text-3xl font-bold text-slate-900">
+                {{ hidden_completed_count }} / {{ hidden_total_count }}
+            </p>
+        </div>
+
+        <div>
+            <p class="text-sm text-slate-500">
+                Achievement XP
+            </p>
+
+            <p class="text-3xl font-bold text-amber-700">
+                {{ xp_earned }}
+            </p>
+        </div>
+
+    </div>
+
+    <div class="mt-6">
+        <div class="h-3 overflow-hidden rounded-full bg-slate-200">
+            <div
+                class="h-full rounded-full bg-emerald-500"
+                style="width: {{ completion_percentage }}%;"
+            ></div>
+        </div>
+    </div>
+
+</div>
+
+{% for category_name, cards in grouped_cards.items %}
+
+    <section class="mb-10">
+
+        <h2 class="mb-4 text-2xl font-bold text-slate-800">
+            {{ category_name }}
+        </h2>
+
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+
+            {% for card in cards %}
+                {% include "achievements/_achievement_card.html" %}
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+{% endfor %}
+
+{% if hidden_cards %}
+
+    <section class="mb-10">
+
+        <h2 class="mb-4 text-2xl font-bold text-slate-800">
+            Hidden Achievements
+        </h2>
+
+        <p class="mb-4 text-sm text-slate-600">
+            Clues and anonymous progress are shown, but the achievement details remain secret until discovered.
+        </p>
+
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+
+            {% for card in hidden_cards %}
+                {% include "achievements/_hidden_achievement_card.html" %}
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+{% endif %}
+
+<section class="mb-8">
+
+    <h2 class="mb-4 text-2xl font-bold text-slate-800">
+        Recently Unlocked
+    </h2>
+
+    {% if recently_unlocked %}
+
+        <div class="overflow-hidden rounded-xl bg-white shadow">
+
+            <ul class="divide-y divide-slate-100">
+
+                {% for user_achievement in recently_unlocked %}
+
+                    <li class="flex items-center justify-between gap-4 px-5 py-4">
+
+                        <div class="flex items-center gap-3">
+
+                            <span class="text-2xl">
+                                {{ user_achievement.achievement.icon|default:"🏅" }}
+                            </span>
+
+                            <div>
+                                <p class="font-semibold text-slate-800">
+                                    {{ user_achievement.achievement.name }}
+                                </p>
+
+                                <p class="text-sm text-slate-500">
+                                    {{ user_achievement.achievement.get_difficulty_display }}
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <time class="text-sm text-slate-500">
+                            {{ user_achievement.unlocked_at|date:"d M Y" }}
+                        </time>
+
+                    </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+    {% else %}
+
+        <div class="rounded-xl bg-white p-6 shadow">
+            <p class="text-slate-600">
+                Complete your first achievement to begin your history.
+            </p>
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

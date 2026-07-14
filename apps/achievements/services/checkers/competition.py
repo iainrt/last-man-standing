@@ -1,27 +1,37 @@
-from apps.achievements.services.unlock_service import unlock_achievement, update_achievement_progress
+from apps.achievements.services.unlock_service import unlock_achievement
 
 
-def check_competition_achievements(
-    competition,
-    winners,
-):
+def check_competition_achievements(competition, winners):
     """
-    Called once a competition has completed.
+    Check achievements after a competition has been completed.
+
+    Every winner receives Competition Winner.
+
+    If the competition has multiple winners, every winner also receives
+    Joint Winner.
+
+    Void competitions pass an empty winner list and award nothing.
     """
+
+    results = []
 
     if not winners:
-        return
+        return results
 
     for member in winners:
-
-        unlock_achievement(
-            member.user,
-            "competition_winner",
+        results.append(
+            unlock_achievement(
+                member.user,
+                "competition_winner",
+            )
         )
 
         if competition.has_multiple_winners:
-
-            unlock_achievement(
-                member.user,
-                "joint_winner",
+            results.append(
+                unlock_achievement(
+                    member.user,
+                    "joint_winner",
+                )
             )
+
+    return results

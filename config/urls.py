@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 from apps.accounts.views import public_profile_view
+from apps.achievements import views as achievement_views
 
 urlpatterns = [
     path("", include("apps.core.urls")),
@@ -45,5 +46,17 @@ urlpatterns = [
         "players/<int:user_id>/",
         public_profile_view,
         name="public_profile",
+    ),
+
+    path(
+        "achievements/",
+        achievement_views.achievement_list_view,
+        name="achievement_list",
+    ),
+
+    path(
+        "achievements/notifications/seen/",
+        achievement_views.mark_achievement_notifications_seen,
+        name="achievement_notifications_seen",
     ),
 ]
