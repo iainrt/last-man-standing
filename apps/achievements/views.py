@@ -7,6 +7,10 @@ from django.utils import timezone
 
 from .models import Achievement, UserAchievement
 
+from apps.achievements.services.rarity_service import (
+    get_rarest_unlocked_achievement,
+)
+
 
 @login_required
 def achievement_list_view(request):
@@ -101,6 +105,10 @@ def achievement_list_view(request):
         .order_by("-unlocked_at")[:5]
     )
 
+    rarest_achievement = get_rarest_unlocked_achievement(
+        request.user
+    )
+
     return render(
         request,
         "achievements/list.html",
@@ -114,6 +122,7 @@ def achievement_list_view(request):
             "hidden_completed_count": hidden_completed_count,
             "xp_earned": xp_earned,
             "completion_percentage": completion_percentage,
+            "rarest_achievement": rarest_achievement,
         },
     )
 

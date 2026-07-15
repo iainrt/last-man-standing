@@ -87,6 +87,163 @@
 
     </div>
 
+    <section class="mb-8">
+
+        <h2 class="mb-4 text-2xl font-bold text-slate-800">
+            Player Statistics
+        </h2>
+
+        <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+
+            <!-- Row 1: Competition statistics -->
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Competitions entered
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.competitions_entered }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Competitions won
+                </p>
+
+                <p class="text-3xl font-bold text-amber-700">
+                    {{ player_statistics.competitions_won }}
+                </p>
+
+                {% if player_statistics.joint_wins %}
+                    <p class="mt-1 text-sm text-slate-500">
+                        Includes
+                        {{ player_statistics.joint_wins }}
+                        joint win{{ player_statistics.joint_wins|pluralize }}
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Competition win %
+                </p>
+
+                <p class="text-3xl font-bold text-amber-700">
+                    {{ player_statistics.win_percentage }}%
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Currently alive
+                </p>
+
+                <p class="text-3xl font-bold text-emerald-700">
+                    {{ player_statistics.competitions_alive }}
+                </p>
+            </div>
+
+            <!-- Row 2: Pick statistics -->
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Successful picks
+                </p>
+
+                <p class="text-3xl font-bold text-emerald-700">
+                    {{ player_statistics.successful_picks }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Pick success
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.pick_success_percentage }}%
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Best survival run
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.best_survival_run }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Weeks survived
+                </p>
+
+                <p class="text-3xl font-bold text-emerald-700">
+                    {{ player_statistics.weeks_survived }}
+                </p>
+            </div>
+
+            <!-- Row 3: Playing style -->
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Favourite club
+                </p>
+
+                {% if player_statistics.favourite_team %}
+                    <p class="mt-1 text-xl font-bold text-slate-900">
+                        {{ player_statistics.favourite_team.team__name }}
+                    </p>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        {{ player_statistics.favourite_team.total_picks }}
+                        pick{{ player_statistics.favourite_team.total_picks|pluralize }}
+                    </p>
+                {% else %}
+                    <p class="mt-1 text-xl font-bold text-slate-400">
+                        —
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Unique clubs picked
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.unique_clubs_picked }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Jokers played
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.joker_uses }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Joker saves
+                </p>
+
+                <p class="text-3xl font-bold text-purple-700">
+                    {{ player_statistics.joker_saves }}
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
     <section>
 
         <h2 class="mb-4 text-2xl font-bold text-slate-800">
