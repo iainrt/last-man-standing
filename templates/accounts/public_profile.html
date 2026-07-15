@@ -87,6 +87,106 @@
 
     </div>
 
+    <section class="mb-8">
+
+        <h2 class="mb-4 text-2xl font-bold text-slate-800">
+            Player Statistics
+        </h2>
+
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Competitions entered
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.competitions_entered }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Competitions won
+                </p>
+
+                <p class="text-3xl font-bold text-amber-700">
+                    {{ player_statistics.competitions_won }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Weeks survived
+                </p>
+
+                <p class="text-3xl font-bold text-emerald-700">
+                    {{ player_statistics.weeks_survived }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Best survival run
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.best_survival_run }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Successful picks
+                </p>
+
+                <p class="text-3xl font-bold text-emerald-700">
+                    {{ player_statistics.successful_picks }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Pick success
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.pick_success_percentage }}%
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Jokers played
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.joker_uses }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Joker saves
+                </p>
+
+                <p class="text-3xl font-bold text-purple-700">
+                    {{ player_statistics.joker_saves }}
+                </p>
+            </div>
+
+        </div>
+
+        {% if player_statistics.joint_wins %}
+            <p class="mt-4 text-sm text-slate-600">
+                Includes
+                <strong>{{ player_statistics.joint_wins }}</strong>
+                joint win{{ player_statistics.joint_wins|pluralize }}.
+            </p>
+        {% endif %}
+
+    </section>
+
     <section>
 
         <h2 class="mb-4 text-2xl font-bold text-slate-800">

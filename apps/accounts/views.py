@@ -5,6 +5,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegisterForm, ProfileForm
 
 from apps.achievements.models import Achievement, UserAchievement
+from apps.accounts.services.player_statistics import (
+    get_player_statistics,
+)
 
 
 @login_required
@@ -161,6 +164,8 @@ def public_profile_view(request, user_id):
         for user_achievement in profile_achievements
     )
 
+    player_statistics = get_player_statistics(profile_user)
+
     return render(
         request,
         "accounts/public_profile.html",
@@ -172,5 +177,6 @@ def public_profile_view(request, user_id):
             "total_active_achievements": total_active_achievements,
             "completion_percentage": completion_percentage,
             "achievement_xp": achievement_xp,
+            "player_statistics": player_statistics,
         },
     )
