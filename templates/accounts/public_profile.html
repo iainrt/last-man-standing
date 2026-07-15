@@ -93,7 +93,9 @@
             Player Statistics
         </h2>
 
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+
+            <!-- Row 1: Competition statistics -->
 
             <div class="rounded-xl bg-white p-4 shadow">
                 <p class="text-sm text-slate-500">
@@ -113,27 +115,37 @@
                 <p class="text-3xl font-bold text-amber-700">
                     {{ player_statistics.competitions_won }}
                 </p>
+
+                {% if player_statistics.joint_wins %}
+                    <p class="mt-1 text-sm text-slate-500">
+                        Includes
+                        {{ player_statistics.joint_wins }}
+                        joint win{{ player_statistics.joint_wins|pluralize }}
+                    </p>
+                {% endif %}
             </div>
 
             <div class="rounded-xl bg-white p-4 shadow">
                 <p class="text-sm text-slate-500">
-                    Weeks survived
+                    Competition win %
+                </p>
+
+                <p class="text-3xl font-bold text-amber-700">
+                    {{ player_statistics.win_percentage }}%
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Currently alive
                 </p>
 
                 <p class="text-3xl font-bold text-emerald-700">
-                    {{ player_statistics.weeks_survived }}
+                    {{ player_statistics.competitions_alive }}
                 </p>
             </div>
 
-            <div class="rounded-xl bg-white p-4 shadow">
-                <p class="text-sm text-slate-500">
-                    Best survival run
-                </p>
-
-                <p class="text-3xl font-bold text-slate-900">
-                    {{ player_statistics.best_survival_run }}
-                </p>
-            </div>
+            <!-- Row 2: Pick statistics -->
 
             <div class="rounded-xl bg-white p-4 shadow">
                 <p class="text-sm text-slate-500">
@@ -152,6 +164,59 @@
 
                 <p class="text-3xl font-bold text-slate-900">
                     {{ player_statistics.pick_success_percentage }}%
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Best survival run
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.best_survival_run }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Weeks survived
+                </p>
+
+                <p class="text-3xl font-bold text-emerald-700">
+                    {{ player_statistics.weeks_survived }}
+                </p>
+            </div>
+
+            <!-- Row 3: Playing style -->
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Favourite club
+                </p>
+
+                {% if player_statistics.favourite_team %}
+                    <p class="mt-1 text-xl font-bold text-slate-900">
+                        {{ player_statistics.favourite_team.team__name }}
+                    </p>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        {{ player_statistics.favourite_team.total_picks }}
+                        pick{{ player_statistics.favourite_team.total_picks|pluralize }}
+                    </p>
+                {% else %}
+                    <p class="mt-1 text-xl font-bold text-slate-400">
+                        —
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Unique clubs picked
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.unique_clubs_picked }}
                 </p>
             </div>
 
@@ -176,14 +241,6 @@
             </div>
 
         </div>
-
-        {% if player_statistics.joint_wins %}
-            <p class="mt-4 text-sm text-slate-600">
-                Includes
-                <strong>{{ player_statistics.joint_wins }}</strong>
-                joint win{{ player_statistics.joint_wins|pluralize }}.
-            </p>
-        {% endif %}
 
     </section>
 

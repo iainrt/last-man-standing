@@ -1,4 +1,4 @@
-from django.db.models import Count, Q
+from django.db.models import Count
 
 from apps.competitions.models import (
     Competition,
@@ -46,6 +46,16 @@ def get_player_statistics(user):
         user=user,
     )
 
+    competitions_entered = memberships.count()
+    competitions_completed = completed_memberships.count()
+    competitions_won = competition_wins.count()
+
+    competitions_alive = memberships.filter(
+        competition__status=Competition.Status.ACTIVE,
+        competition__is_active=True,
+        is_eliminated=False,
+    ).count()
+
     successful_picks = selections.filter(
         result__in=SURVIVAL_RESULTS,
     ).count()
@@ -53,6 +63,17 @@ def get_player_statistics(user):
     eliminated_picks = selections.filter(
         result__in=ELIMINATION_RESULTS,
     ).count()
+
+    total_processed_picks = successful_picks + eliminated_picks
+
+    pick_success_percentage = 0
+
+    if total_processed_picks:
+        pick_success_percentage = round(
+            successful_picks
+            / total_processed_picks
+            * 100
+        )
 
     joker_uses = selections.filter(
         is_joker=True,
@@ -81,26 +102,53 @@ def get_player_statistics(user):
         competition__has_multiple_winners=True,
     ).count()
 
-    total_processed_picks = successful_picks + eliminated_picks
+    win_percentage = 0
 
-    pick_success_percentage = 0
-
-    if total_processed_picks:
-        pick_success_percentage = round(
-            successful_picks / total_processed_picks * 100
+    if competitions_completed:
+        win_percentage = round(
+            competitions_won
+            / competitions_completed
+            * 100
         )
 
+    favourite_team = (
+        selections
+        .values(
+            "team_id",
+            "team__name",
+        )
+        .annotate(
+            total_picks=Count("id"),
+        )
+        .order_by(
+            "-total_picks",
+            "team__name",
+        )
+        .first()
+    )
+
+    unique_clubs_picked = (
+        selections
+        .values("team_id")
+        .distinct()
+        .count()
+    )
+
     return {
-        "competitions_entered": memberships.count(),
-        "competitions_completed": completed_memberships.count(),
-        "competitions_won": competition_wins.count(),
+        "competitions_entered": competitions_entered,
+        "competitions_completed": competitions_completed,
+        "competitions_alive": competitions_alive,
+        "competitions_won": competitions_won,
         "single_wins": single_wins,
         "joint_wins": joint_wins,
+        "win_percentage": win_percentage,
         "successful_picks": successful_picks,
         "eliminated_picks": eliminated_picks,
         "weeks_survived": successful_picks,
+        "pick_success_percentage": pick_success_percentage,
         "joker_uses": joker_uses,
         "joker_saves": joker_saves,
         "best_survival_run": best_survival_run,
-        "pick_success_percentage": pick_success_percentage,
+        "favourite_team": favourite_team,
+        "unique_clubs_picked": unique_clubs_picked,
     }
