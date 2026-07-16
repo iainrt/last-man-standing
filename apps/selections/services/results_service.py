@@ -1,6 +1,15 @@
+from django.db import transaction
+from django.utils import timezone
+
+from apps.competitions.models import (
+    Competition,
+    CompetitionGameweek,
+)
+from apps.competitions.services.winner_service import (
+    evaluate_competition_winner,
+)
 from apps.fixtures.models import Match
 from apps.selections.models import Selection
-from apps.competitions.services.winner_service import evaluate_competition_winner
 from apps.achievements.services.checkers.result import (
     check_result_achievements,
 )
@@ -62,6 +71,11 @@ def process_selection(selection):
 
 
 def process_pending_selections():
+    """
+    Process completed selections, eliminate missed picks and evaluate
+    competition winners once each competition gameweek has fully finished.
+    """
+
     selections = list(
         Selection.objects
         .filter(
@@ -79,19 +93,108 @@ def process_pending_selections():
     )
 
     processed_count = 0
-    processed_competition_gameweeks = set()
 
     for selection in selections:
         if process_selection(selection):
             processed_count += 1
-            processed_competition_gameweeks.add(
-                selection.competition_gameweek
+
+    due_gameweeks = (
+        CompetitionGameweek.objects
+        .filter(
+            is_published=True,
+            deadline__lte=timezone.now(),
+            results_processed=False,
+            competition__status=Competition.Status.ACTIVE,
+        )
+        .select_related(
+            "competition",
+            "gameweek",
+        )
+        .order_by(
+            "competition_id",
+            "competition_week_number",
+        )
+    )
+
+    for competition_gameweek in due_gameweeks:
+        with transaction.atomic():
+            eliminate_missing_selections(
+                competition_gameweek
             )
 
-    for competition_gameweek in processed_competition_gameweeks:
-        evaluate_competition_winner(
-            competition=competition_gameweek.competition,
-            competition_gameweek=competition_gameweek,
-        )
+            # Do not decide the competition until every fixture has ended.
+            if not all_gameweek_matches_finished(
+                competition_gameweek
+            ):
+                continue
+
+            # Every submitted selection should now have been processed.
+            if competition_gameweek.selections.filter(
+                processed=False,
+            ).exists():
+                continue
+
+            evaluate_competition_winner(
+                competition=competition_gameweek.competition,
+                competition_gameweek=competition_gameweek,
+            )
+
+            competition_gameweek.results_processed = True
+            competition_gameweek.results_processed_at = timezone.now()
+
+            competition_gameweek.save(
+                update_fields=[
+                    "results_processed",
+                    "results_processed_at",
+                ]
+            )
 
     return processed_count
+
+def eliminate_missing_selections(competition_gameweek):
+    """
+    Eliminate every active member who failed to submit a selection before
+    the gameweek deadline.
+
+    This is idempotent because it only updates members who are still alive.
+    """
+
+    if competition_gameweek.deadline > timezone.now():
+        return 0
+
+    selected_member_ids = (
+        competition_gameweek.selections
+        .values_list(
+            "competition_member_id",
+            flat=True,
+        )
+    )
+
+    missing_members = (
+        competition_gameweek.competition.members
+        .filter(is_eliminated=False)
+        .exclude(id__in=selected_member_ids)
+    )
+
+    return missing_members.update(
+        is_eliminated=True,
+        eliminated_in_competition_gameweek=competition_gameweek,
+    )
+
+
+def all_gameweek_matches_finished(competition_gameweek):
+    """
+    Return True only when the underlying league gameweek has fixtures and
+    every fixture has finished.
+    """
+
+    matches = Match.objects.filter(
+        gameweek=competition_gameweek.gameweek,
+    )
+
+    return (
+        matches.exists()
+        and not matches.exclude(
+            status=Match.Status.FINISHED,
+        ).exists()
+    )
