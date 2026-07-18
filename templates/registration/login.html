@@ -2,21 +2,55 @@
 
 {% block content %}
 
-<h1 class="mb-6 text-3xl font-bold text-slate-900">Login</h1>
+<h1 class="mb-6 text-3xl font-bold text-slate-900">
+    Login
+</h1>
 
-<form method="post">
+<form method="post" class="mt-6 space-y-4">
     {% csrf_token %}
-    {{ form.as_p }}
 
-    <button type="submit"
-            class="rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700">
-        Login
+    {% if form.non_field_errors %}
+        <div class="rounded-lg border border-red-300 bg-red-50 p-4">
+            {% for error in form.non_field_errors %}
+                <p class="font-bold text-red-700">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% for field in form %}
+        <div>
+            <label
+                for="{{ field.id_for_label }}"
+                class="mb-1 block text-sm font-medium text-slate-700"
+            >
+                {{ field.label }}
+            </label>
+
+            {{ field }}
+
+            {% for error in field.errors %}
+                <p class="mt-1 font-bold text-red-700">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    <button
+        type="submit"
+        class="rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700"
+    >
+        Log In
     </button>
 </form>
 
-<p>
-    <a href="{% url 'password_reset' %}"
-        class="text-sm font-medium text-slate-700 hover:text-slate-900">
+<p class="mt-4">
+    <a
+        href="{% url 'password_reset' %}"
+        class="text-sm font-medium text-slate-700 hover:text-slate-900"
+    >
         Forgotten your password?
     </a>
 </p>
