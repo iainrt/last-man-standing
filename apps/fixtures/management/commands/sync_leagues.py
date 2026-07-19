@@ -11,6 +11,7 @@ LEAGUES = [
     {"api_id": 41, "name": "League One", "country": "England"},
     {"api_id": 42, "name": "League Two", "country": "England"},
     {"api_id": 357, "name": "Premier Division", "country": "Ireland"},
+    {"api_id": 172, "name": "First Professional League", "country": "Bulgaria"},
 ]
 
 

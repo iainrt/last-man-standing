@@ -479,7 +479,12 @@
 
                                 <tr class="hover:bg-slate-50">
                                     <td class="px-4 py-3 text-sm">
-                                        {{ selection.competition_member.user.profile.screen_name }}
+                                        <a
+                                            href="{% url 'public_profile' selection.competition_member.user.id %}"
+                                            class="font-medium text-slate-800 hover:text-emerald-700 hover:underline"
+                                        >
+                                            {{ selection.competition_member.user.profile.screen_name }}
+                                        </a>
                                     </td>
 
                                     <td class="px-4 py-3 text-sm">
@@ -591,7 +596,12 @@
                 <tr class="hover:bg-slate-50">
 
                     <td class="px-4 py-3 text-sm">
-                        {{ row.member.user.profile.screen_name }}
+                        <a
+                            href="{% url 'public_profile' row.member.user.id %}"
+                            class="font-medium text-slate-800 hover:text-emerald-700 hover:underline"
+                        >
+                            {{ row.member.user.profile.screen_name }}
+                        </a>
                     </td>
 
                     <td class="px-4 py-3 text-sm">

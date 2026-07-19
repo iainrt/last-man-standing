@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mx-auto max-w-5xl">
+
+    <div class="mb-6 rounded-xl bg-white p-6 shadow">
+
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+
+            <div>
+                <h1 class="mb-2 text-3xl font-bold text-slate-900">
+                    {{ profile_user.profile.screen_name }}
+                </h1>
+
+                {% if profile_user.profile.favourite_team %}
+                    <p class="text-slate-600">
+                        Supports
+                        <strong>
+                            {{ profile_user.profile.favourite_team }}
+                        </strong>
+                    </p>
+                {% endif %}
+            </div>
+
+            {% if is_own_profile %}
+                <a
+                    href="{% url 'edit_profile' %}"
+                    class="inline-block rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700"
+                >
+                    Edit Profile
+                </a>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <div class="mb-8 rounded-xl bg-white p-6 shadow">
+
+        <h2 class="mb-4 text-2xl font-bold text-slate-800">
+            Achievement Progress
+        </h2>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+
+            <div>
+                <p class="text-sm text-slate-500">
+                    Completed
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ unlocked_count }} / {{ total_active_achievements }}
+                </p>
+            </div>
+
+            <div>
+                <p class="text-sm text-slate-500">
+                    Completion
+                </p>
+
+                <p class="text-3xl font-bold text-emerald-700">
+                    {{ completion_percentage }}%
+                </p>
+            </div>
+
+            <div>
+                <p class="text-sm text-slate-500">
+                    Achievement XP
+                </p>
+
+                <p class="text-3xl font-bold text-amber-700">
+                    {{ achievement_xp }}
+                </p>
+            </div>
+
+        </div>
+
+        <div class="mt-6">
+            <div class="h-3 overflow-hidden rounded-full bg-slate-200">
+                <div
+                    class="h-full rounded-full bg-emerald-500"
+                    style="width: {{ completion_percentage }}%;"
+                ></div>
+            </div>
+        </div>
+
+    </div>
+
+    <section class="mb-8">
+
+        <h2 class="mb-4 text-2xl font-bold text-slate-800">
+            Player Statistics
+        </h2>
+
+        <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+
+            <!-- Row 1: Competition statistics -->
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Competitions entered
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.competitions_entered }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Competitions won
+                </p>
+
+                <p class="text-3xl font-bold text-amber-700">
+                    {{ player_statistics.competitions_won }}
+                </p>
+
+                {% if player_statistics.joint_wins %}
+                    <p class="mt-1 text-sm text-slate-500">
+                        Includes
+                        {{ player_statistics.joint_wins }}
+                        joint win{{ player_statistics.joint_wins|pluralize }}
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Competition win %
+                </p>
+
+                <p class="text-3xl font-bold text-amber-700">
+                    {{ player_statistics.win_percentage }}%
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Currently alive
+                </p>
+
+                <p class="text-3xl font-bold text-emerald-700">
+                    {{ player_statistics.competitions_alive }}
+                </p>
+            </div>
+
+            <!-- Row 2: Pick statistics -->
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Successful picks
+                </p>
+
+                <p class="text-3xl font-bold text-emerald-700">
+                    {{ player_statistics.successful_picks }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Pick success
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.pick_success_percentage }}%
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Best survival run
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.best_survival_run }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Weeks survived
+                </p>
+
+                <p class="text-3xl font-bold text-emerald-700">
+                    {{ player_statistics.weeks_survived }}
+                </p>
+            </div>
+
+            <!-- Row 3: Playing style -->
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Favourite club
+                </p>
+
+                {% if player_statistics.favourite_team %}
+                    <p class="mt-1 text-xl font-bold text-slate-900">
+                        {{ player_statistics.favourite_team.team__name }}
+                    </p>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        {{ player_statistics.favourite_team.total_picks }}
+                        pick{{ player_statistics.favourite_team.total_picks|pluralize }}
+                    </p>
+                {% else %}
+                    <p class="mt-1 text-xl font-bold text-slate-400">
+                        —
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Unique clubs picked
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.unique_clubs_picked }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Jokers played
+                </p>
+
+                <p class="text-3xl font-bold text-slate-900">
+                    {{ player_statistics.joker_uses }}
+                </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-4 shadow">
+                <p class="text-sm text-slate-500">
+                    Joker saves
+                </p>
+
+                <p class="text-3xl font-bold text-purple-700">
+                    {{ player_statistics.joker_saves }}
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section>
+
+        <h2 class="mb-4 text-2xl font-bold text-slate-800">
+            Achievements
+        </h2>
+
+        {% if achievement_cards %}
+
+            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+
+                {% for card in achievement_cards %}
+                    {% include "accounts/_public_achievement_card.html" %}
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="rounded-xl bg-white p-6 shadow">
+
+                <p class="text-slate-600">
+                    {{ profile_user.profile.screen_name }} has not completed any achievements yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}

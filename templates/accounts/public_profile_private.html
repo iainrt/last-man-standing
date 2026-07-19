@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mx-auto max-w-xl rounded-xl bg-white p-8 text-center shadow">
+
+    <h1 class="mb-4 text-3xl font-bold text-slate-900">
+        Private Profile
+    </h1>
+
+    <p class="text-slate-600">
+        {{ profile_user.profile.screen_name }} has chosen to keep their profile private.
+    </p>
+
+    <p class="mt-6">
+        <a
+            href="{% url 'competition_list' %}"
+            class="inline-block rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700"
+        >
+            Back to Competitions
+        </a>
+    </p>
+
+</div>
+
+{% endblock %}

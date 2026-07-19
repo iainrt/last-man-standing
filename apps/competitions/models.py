@@ -130,6 +130,16 @@ class CompetitionGameweek(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    results_processed = models.BooleanField(
+        default=False,
+        help_text="Whether eliminations and winner evaluation are complete.",
+    )
+
+    results_processed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+    )
+
     class Meta:
         constraints = [
             models.UniqueConstraint(

@@ -22,6 +22,8 @@ class Profile(models.Model):
         related_name="supporters",
     )
 
+    is_public = models.BooleanField(default=True)
+
     can_create_competitions = models.BooleanField(
         default=False,
     )

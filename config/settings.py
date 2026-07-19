@@ -55,11 +55,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "apps.accounts",
-    "apps.competitions",
-    "apps.core",
-    "apps.fixtures",
-    "apps.selections",
+    "apps.accounts.apps.AccountsConfig",
+    "apps.competitions.apps.CompetitionsConfig",
+    "apps.core.apps.CoreConfig",
+    "apps.fixtures.apps.FixturesConfig",
+    "apps.selections.apps.SelectionsConfig",
+    "apps.achievements.apps.AchievementsConfig",
 ]
 
 MIDDLEWARE = [
@@ -85,6 +86,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "apps.achievements.context_processors.achievement_notifications",
             ],
         },
     },
