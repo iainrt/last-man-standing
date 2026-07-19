@@ -8,7 +8,7 @@ The format is inspired by *Keep a Changelog* and the project follows Semantic Ve
 
 ## Version 0.9 (Closed Alpha)
 
-**Release Date:** TBC
+**Release Date:** 19/07/2026
 
 ### Added
 
