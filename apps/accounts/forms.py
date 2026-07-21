@@ -60,4 +60,5 @@ class ProfileForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["favourite_team"].queryset = Team.objects.order_by("name")
         apply_form_control_styles(self)
