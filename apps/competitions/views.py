@@ -94,8 +94,15 @@ def competition_detail_view(request, competition_id):
             "season",
             "season__league",
             "created_by",
+            "created_by__profile",
         ),
         id=competition_id,
+    )
+
+    creator_profile = getattr(competition.created_by, "profile", None)
+    creator_display_name = (
+        getattr(creator_profile, "screen_name", "")
+        or competition.created_by.username
     )
 
     membership = get_object_or_404(
@@ -231,6 +238,7 @@ def competition_detail_view(request, competition_id):
         "competitions/detail.html",
         {
             "competition": competition,
+            "creator_display_name": creator_display_name,
             "membership": membership,
             "members": members,
             "current_competition_gameweek": current_competition_gameweek,

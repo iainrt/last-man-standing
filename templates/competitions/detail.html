@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="mb-6 rounded-xl bg-white p-6 shadow">
+<div id="competition-information" class="mb-6 rounded-xl bg-white p-6 shadow">
 
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
@@ -14,12 +14,26 @@
             <p class="text-slate-700">
                 {{ competition.season }}
             </p>
+
+            <div class="mt-4 grid gap-3 md:grid-cols-2">
+                <p class="text-slate-700">
+                    <strong>Created by:</strong>
+                    {{ creator_display_name }}
+                </p>
+
+                {% if not competition.is_locked %}
+                    <p class="text-slate-700">
+                        <strong>Invite code:</strong>
+                        {{ competition.invite_code }}
+                    </p>
+                {% endif %}
+            </div>
         </div>
 
         <div>
             {% if competition.is_locked %}
                 <span class="rounded-full bg-red-100 px-3 py-2 text-sm font-medium text-red-700">
-                    🔒 Locked
+                    🔒 Closed
                 </span>
             {% else %}
                 <span class="rounded-full bg-emerald-100 px-3 py-2 text-sm font-medium text-emerald-700">
@@ -27,24 +41,6 @@
                 </span>
             {% endif %}
         </div>
-
-    </div>
-
-</div>
-
-<div class="mb-6 rounded-xl bg-white p-4 shadow">
-
-    <div class="grid gap-3 md:grid-cols-2">
-
-        <p class="text-slate-700">
-            <strong>Created By:</strong>
-            {{ competition.created_by.username }}
-        </p>
-
-        <p class="text-slate-700">
-            <strong>Invite Code:</strong>
-            {{ competition.invite_code }}
-        </p>
 
     </div>
 
