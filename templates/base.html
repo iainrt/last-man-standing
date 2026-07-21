@@ -37,6 +37,12 @@
                         Achievements
                     </a>
 
+                    {% if user.is_superuser %}
+                        <a href="{% url 'admin:index' %}" class="hover:text-emerald-300">
+                            Admin
+                        </a>
+                    {% endif %}
+
                     <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
                         <button type="submit" class="hover:text-emerald-300">
